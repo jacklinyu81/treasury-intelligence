@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Treasury Intelligence — 台北富邦銀行</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+/* ── tokens ── */
+:root{
+  --navy:#003F7F;
+  --blue:#0066CC;
+  --blue-m:#1A7FD4;
+  --teal:#00A99D;
+  --teal-l:#E0F5F4;
+  --sky:#E8F2FF;
+  --sky2:#C8DEFF;
+  --gold:#B8860B;
+  --gold-l:#FDF6E3;
+  --red:#C0392B;
+  --red-l:#FDECEA;
+  --gray0:#F4F6FA;
+  --gray1:#EDF0F7;
+  --gray2:#D0D8E8;
+  --gray3:#8895B0;
+  --text:#0D1B35;
+  --text2:#4A5568;
+  --white:#FFFFFF;
+  --shadow:0 2px 16px rgba(0,63,127,.10);
+  --shadow-lg:0 8px 40px rgba(0,63,127,.16);
+  --r:10px;
+  --r-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--gray0);color:var(--text);font-size:14px;line-height:1.6}
+
+/* ── scrollbar ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--gray2);border-radius:99px}
+
+/* ── layout ── */
+.shell{display:flex;min-height:100vh}
+
+/* ── sidebar ── */
+.sidebar{
+  width:240px;flex-shrink:0;background:var(--navy);
+  position:fixed;top:0;left:0;height:100vh;
+  display:flex;flex-direction:column;z-index:100;
+  overflow-y:auto;
+}
+.sb-head{padding:28px 22px 22px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sb-icon{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;background:white}
+.sb-icon svg{width:30px;height:30px}
+.sb-brand{font-family:'DM Serif Display',serif;font-size:15px;color:white;line-height:1.2}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
+.sb-prog{margin-top:14px}
+.sb-prog-bar{height:3px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}
+.sb-prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--blue-m));border-radius:99px;transition:width .5s}
+.sb-prog-txt{font-size:10px;color:rgba(255,255,255,.4);margin-top:5px}
+
+.sb-section{padding:20px 22px 6px;font-size:10px;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase}
+.sb-item{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 22px;cursor:pointer;
+  font-size:13px;color:rgba(255,255,255,.55);
+  border-left:3px solid transparent;
+  transition:all .15s;user-select:none;
+}
+.sb-item:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.05)}
+.sb-item.active{color:white;background:rgba(0,169,157,.15);border-left-color:var(--teal)}
+.sb-item.done{color:rgba(255,255,255,.7)}
+.sb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0;transition:all .2s}
+.sb-item.active .sb-dot{background:var(--teal);box-shadow:0 0 8px var(--teal)}
+.sb-item.done .sb-dot{background:rgba(0,169,157,.7)}
+.sb-num{font-size:11px;opacity:.4;width:16px;text-align:center}
+
+.sb-footer{margin-top:auto;padding:18px 22px;border-top:1px solid rgba(255,255,255,.08)}
+.sb-footer-txt{font-size:10px;color:rgba(255,255,255,.25);line-height:1.6}
+
+/* ── topbar ── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--gray2);
+  height:58px;display:flex;align-items:center;
+  padding:0 32px;justify-content:space-between;
+}
+.tb-left{display:flex;align-items:center;gap:14px}
+.tb-breadcrumb{font-size:12px;color:var(--gray3)}
+.tb-title{font-size:15px;font-weight:600;color:var(--navy)}
+.tb-sep{color:var(--gray2);margin:0 2px}
+.tb-actions{display:flex;gap:8px}
+.btn{
+  padding:7px 18px;border-radius:var(--r-sm);font-size:13px;font-weight:500;
+  cursor:pointer;border:1.5px solid var(--gray2);background:white;
+  color:var(--text);transition:all .15s;font-family:inherit;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn:hover{border-color:var(--blue);color:var(--blue)}
+.btn-primary{background:var(--navy);color:white;border-color:var(--navy)}
+.btn-primary:hover{background:var(--blue);border-color:var(--blue)}
+.btn-teal{background:var(--teal);color:white;border-color:var(--teal)}
+.btn-teal:hover{background:#008F84;border-color:#008F84}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--gray3)}
+.btn-ghost:hover{color:var(--text);background:var(--gray1)}
+.btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+
+/* ── main ── */
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.content{padding:32px;flex:1;max-width:900px}
+
+/* ── sections ── */
+.section{display:none;animation:fadeUp .3s ease}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.sec-header{margin-bottom:28px}
+.sec-header h2{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);line-height:1.2}
+.sec-header p{font-size:13px;color:var(--gray3);margin-top:5px}
+.sec-header-row{display:flex;align-items:flex-end;justify-content:space-between}
+
+/* ── cards ── */
+.card{
+  background:white;border:1px solid var(--gray2);
+  border-radius:var(--r);padding:22px 26px;margin-bottom:18px;
+  box-shadow:var(--shadow);
+}
+.card-head{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:18px;padding-bottom:14px;
+  border-bottom:1px solid var(--gray1);
+}
+.card-head-icon{
+  width:28px;height:28px;border-radius:7px;
+  background:var(--sky);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.card-head-icon svg{width:14px;height:14px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-title{font-size:12px;font-weight:600;color:var(--navy);letter-spacing:.04em;text-transform:uppercase}
+.card-hint{font-size:11px;color:var(--gray3);margin-top:1px}
+
+/* ── form ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.form-full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:5px}
+.field>label{font-size:12px;font-weight:500;color:var(--text2)}
+.hint{font-size:11px;color:var(--gray3)}
+input[type=text],input[type=number],select,textarea{
+  padding:9px 12px;border:1.5px solid var(--gray2);
+  border-radius:var(--r-sm);font-size:13px;color:var(--text);
+  background:white;width:100%;font-family:inherit;transition:border-color .15s;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,102,204,.08)}
+textarea{resize:vertical;min-height:72px;line-height:1.6}
+select{cursor:pointer}
+
+/* ── slider ── */
+.slider-wrap{display:flex;align-items:center;gap:12px;margin-top:4px}
+input[type=range]{flex:1;height:4px;accent-color:var(--blue);cursor:pointer}
+.slider-val{font-size:13px;font-weight:600;color:var(--blue);min-width:38px;text-align:right}
+
+/* ── pills ── */
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.pill{
+  padding:5px 13px;border:1.5px solid var(--gray2);border-radius:99px;
+  font-size:12px;cursor:pointer;transition:all .15s;user-select:none;color:var(--text2);
+}
+.pill:hover{border-color:var(--blue);color:var(--blue)}
+.pill.on{background:var(--blue);color:white;border-color:var(--blue)}
+.pill.on-teal{background:var(--teal);color:white;border-color:var(--teal)}
+
+/* ── inline table ── */
+.itbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+.itbl th{background:var(--navy);color:white;padding:8px 10px;text-align:left;font-size:11px;font-weight:600}
+.itbl td{padding:4px 6px;border-bottom:1px solid var(--gray1)}
+.itbl tr:hover td{background:var(--gray0)}
+.itbl input,.itbl select{border:none;background:transparent;font-size:12px;padding:4px 5px;font-family:inherit;width:100%}
+.itbl input:focus,.itbl select:focus{background:var(--sky);border-radius:4px;outline:none}
+.add-row{font-size:12px;color:var(--teal);cursor:pointer;padding:6px 0;display:inline-flex;align-items:center;gap:5px;margin-top:4px}
+.add-row:hover{text-decoration:underline}
+
+/* ── divider ── */
+.div{height:1px;background:var(--gray1);margin:16px 0}
+
+/* ── metrics row ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.mcard{background:white;border:1px solid var(--gray2);border-radius:var(--r);padding:16px;text-align:center;box-shadow:var(--shadow)}
+.mcard .ml{font-size:10px;font-weight:600;color:var(--gray3);text-transform:uppercase;letter-spacing:.06em}
+.mcard .mv{font-size:20px;font-weight:600;color:var(--navy);margin-top:4px;font-family:'DM Serif Display',serif}
+.mcard .ms{font-size:11px;color:var(--gray3);margin-top:2px}
+.mcard.hi{border-top:3px solid var(--teal)}
+.mcard.warn{border-top:3px solid var(--gold)}
+.mcard.danger{border-top:3px solid var(--red)}
+
+/* ── report area ── */
+.report-shell{background:white;border:1px solid var(--gray2);border-radius:var(--r);box-shadow:var(--shadow-lg);overflow:hidden}
+.report-tabs{display:flex;border-bottom:1px solid var(--gray2);background:var(--gray0)}
+.rtab{padding:12px 22px;font-size:13px;font-weight:500;cursor:pointer;color:var(--gray3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.rtab:hover{color:var(--text)}
+.rtab.active{color:var(--blue);border-bottom-color:var(--blue);background:white}
+.rtab-content{display:none;padding:28px}
+.rtab-content.active{display:block}
+.report-text{
+  font-size:13px;line-height:1.85;color:var(--text);
+  min-height:280px;font-family:'DM Sans',sans-serif;
+}
+.report-text h1{font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);margin:18px 0 8px;border-bottom:2px solid var(--sky2);padding-bottom:6px}
+.report-text h2{font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);margin:16px 0 6px}
+.report-text h3{font-size:14px;font-weight:600;color:var(--blue);margin:12px 0 4px}
+.report-text p{margin:6px 0;line-height:1.8}
+.report-text strong{color:var(--navy)}
+.report-text ul,.report-text ol{padding-left:20px;margin:6px 0}
+.report-text li{margin:3px 0;line-height:1.7}
+.report-text table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}
+.report-text th{background:var(--navy);color:white;padding:7px 10px;text-align:left;font-size:11px}
+.report-text td{padding:6px 10px;border-bottom:1px solid var(--gray1)}
+.report-text tr:nth-child(even) td{background:var(--gray0)}
+.report-text hr{border:none;border-top:1px solid var(--gray2);margin:14px 0}
+.report-text blockquote{border-left:3px solid var(--teal);padding:8px 14px;background:var(--teal-l);margin:10px 0;border-radius:0 6px 6px 0;font-size:12px}
+.report-text code{background:var(--gray1);padding:1px 5px;border-radius:3px;font-family:monospace;font-size:12px}
+.report-placeholder{color:var(--gray3);font-style:italic;text-align:center;padding:60px 0}
+
+/* ── loading ── */
+.loading-bar{display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--sky);border-radius:var(--r-sm);font-size:13px;color:var(--blue);margin-bottom:16px}
+.spinner{width:16px;height:16px;border:2px solid var(--sky2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── section footer ── */
+.sec-nav{display:flex;justify-content:flex-end;gap:10px;margin-top:28px;padding-top:20px;border-top:1px solid var(--gray1)}
+
+/* ── report actions ── */
+.report-actions{display:flex;gap:10px;padding:14px 28px;background:var(--gray0);border-top:1px solid var(--gray2)}
+
+/* ── flow diagram ── */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin:16px 0}
+.flow-step{background:var(--sky);border:1.5px solid var(--sky2);border-radius:8px;padding:10px 16px;font-size:12px;font-weight:500;color:var(--navy);text-align:center;min-width:90px}
+.flow-arrow{color:var(--blue);font-size:18px;padding:0 6px;flex-shrink:0}
+.flow-step.accent{background:var(--navy);color:white;border-color:var(--navy)}
+.flow-step.teal{background:var(--teal-l);border-color:var(--teal);color:#006B65}
+
+/* ── badge ── */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-blue{background:var(--sky);color:var(--blue)}
+.badge-teal{background:var(--teal-l);color:#007A72}
+.badge-gold{background:var(--gold-l);color:var(--gold)}
+.badge-red{background:var(--red-l);color:var(--red)}
+
+/* ── status dot ── */
+.status-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray3);margin-top:8px}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sdot.green{background:#22C55E}
+.sdot.amber{background:#F59E0B}
+.sdot.red{background:#EF4444}
+
+/* ── api key modal ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center}
+.modal-box{background:white;border-radius:12px;padding:32px;width:460px;box-shadow:0 24px 64px rgba(0,0,0,.2)}
+.modal-box h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);margin-bottom:6px}
+.modal-box p{font-size:13px;color:var(--gray3);margin-bottom:20px;line-height:1.6}
+.modal-box input{width:100%;padding:10px 14px;border:1.5px solid var(--gray2);border-radius:var(--r-sm);font-size:13px;font-family:inherit;margin-bottom:8px}
+.modal-box input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,102,204,.08)}
+.modal-hint{font-size:11px;color:var(--gray3);margin-bottom:20px}
+.modal-hint a{color:var(--blue)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.api-status{display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;padding:6px 12px;border-radius:var(--r-sm);border:1.5px solid var(--gray2);background:white;color:var(--text2);transition:all .15s;font-family:inherit}
+.api-status:hover{border-color:var(--blue);color:var(--blue)}
+.api-dot{width:7px;height:7px;border-radius:50%;background:#EF4444;flex-shrink:0}
+.api-dot.ok{background:#22C55E}
+</style>
+</head>
+<body>
+
+<!-- ═══ API KEY MODAL ═══ -->
+<div class="modal-bg" id="apiModal" style="display:none">
+  <div class="modal-box">
+    <h3>設定 Claude API Key</h3>
+    <p>請輸入你的 Anthropic API Key，用於驅動 AI 分析功能。<br>Key 僅儲存在本機瀏覽器，不會上傳至任何伺服器。</p>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off">
+    <div class="modal-hint">還沒有 API Key？<a href="https://console.anthropic.com/settings/keys" target="_blank">前往 Anthropic Console 建立 →</a></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeApiModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveApiKey()">儲存並繼續</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="sb-head">
+    <div class="sb-logo">
+      <div class="sb-icon">
+        <img src="data:image/png;base64,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" style="width:30px;height:30px;object-fit:contain;">
+      </div>
+      <div class="sb-brand">Treasury<br>Intelligence</div>
+    </div>
+    <div class="sb-sub">台北富邦銀行 TMU</div>
+    <div class="sb-prog">
+      <div class="sb-prog-bar"><div class="sb-prog-fill" id="progFill" style="width:14%"></div></div>
+      <div class="sb-prog-txt" id="progTxt">步驟 1 / 7</div>
+    </div>
+  </div>
+
+  <div class="sb-section">問卷填寫</div>
+  <div class="sb-item active" onclick="go(0)" id="nav0"><span class="sb-dot"></span><span class="sb-num">1</span>客戶基本資料</div>
+  <div class="sb-item" onclick="go(1)" id="nav1"><span class="sb-dot"></span><span class="sb-num">2</span>業務與收支結構</div>
+  <div class="sb-item" onclick="go(2)" id="nav2"><span class="sb-dot"></span><span class="sb-num">3</span>外幣收付款</div>
+  <div class="sb-item" onclick="go(3)" id="nav3"><span class="sb-dot"></span><span class="sb-num">4</span>現金流預測</div>
+  <div class="sb-item" onclick="go(4)" id="nav4"><span class="sb-dot"></span><span class="sb-num">5</span>資產負債暴露</div>
+  <div class="sb-item" onclick="go(5)" id="nav5"><span class="sb-dot"></span><span class="sb-num">6</span>現有避險狀況</div>
+
+  <div class="sb-section">分析輸出</div>
+  <div class="sb-item" onclick="go(6)" id="nav6"><span class="sb-dot"></span><span class="sb-num">7</span>Treasury Report</div>
+
+  <div class="sb-footer">
+    <div class="sb-footer-txt">Confidential<br>Treasury Marketing Unit<br>© 台北富邦銀行</div>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+<div class="topbar">
+  <div class="tb-left">
+    <span class="tb-breadcrumb">Treasury Intelligence</span>
+    <span class="tb-sep">›</span>
+    <span class="tb-title" id="tbTitle">客戶基本資料</span>
+  </div>
+  <div class="tb-actions">
+    <button class="api-status" id="apiStatusBtn" onclick="openApiModal()">
+      <span class="api-dot" id="apiDot"></span>
+      <span id="apiStatusTxt">設定 API Key</span>
+    </button>
+    <button class="btn btn-ghost" onclick="loadDemo()">載入 Demo 資料</button>
+    <button class="btn" onclick="clearAll()">清除</button>
+    <button class="btn btn-teal" onclick="go(6);generateReport()" id="genBtn" disabled>產出報告</button>
+    <button class="btn btn-primary" onclick="exportPPT()" id="pptBtn" disabled>下載 PPT</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══ 0: 基本資料 ══ -->
+<div class="section active" id="sec0">
+  <div class="sec-header">
+    <div class="sec-header-row">
+      <div><h2>客戶基本資料</h2><p>公司識別與拜訪背景</p></div>
+      <span class="badge badge-blue">Section 1 / 6</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-head-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+      <div><div class="card-title">公司識別</div></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>越南公司名稱</label><input type="text" id="companyVN" placeholder="e.g. Công ty TNHH Fubon Furniture VN"></div>
+      <div class="field"><label>台灣母公司</label><input type="text" id="companyTW" placeholder="e.g. 富邦家具股份有限公司"></div>
+      <div class="field"><label>產業別</label>
+        <select id="industry">
+          <option value="">請選擇</option>
+          <option>電子製造 / EMS</option><option>紡織成衣</option><option>木材家具</option>
+          <option>機械設備</option><option>化工材料</option><option>食品飲料</option>
+          <option>零售通路</option><option>其他製造業</option><option>服務業</option>
+        </select>
+      </div>
+      <div class="field"><label>設廠地點</label>
+        <select id="location">
+          <option value="">請選擇</option>
+          <option>胡志明市</option><option>河內</option><option>平陽省</option>
+          <option>同奈省</option><option>龍安省</option><option>海防市</option><option>其他</option>
+        </select>
+      </div>
+      <div class="field"><label>員工人數</label>
+        <select id="headcount">
+          <option value="">請選擇</option><option>50人以下</option><option>50–200人</option>
+          <option>200–500人</option><option>500–2,000人</option><option>2,000人以上</option>
+        </select>
+      </div>
+      <div class="field"><label>越南子公司成立年份</label><input type="number" id="foundedYear" placeholder="e.g. 2016" min="1990" max="2025"></div>
+      <div class="field form-full"><label>財務聯絡人（姓名 / 職稱）</label><input type="text" id="contactName" placeholder="e.g. 陳大偉 / CFO"></div>
+      <div class="field form-full"><label>拜訪背景 / TMO備註</label><textarea id="companyNote" placeholder="e.g. 2025年擴廠中，月均換匯約USD300K，主要在Vietcombank，未做過Forward，CFO對避險有興趣但不熟產品..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="sec-nav"><button class="btn btn-primary" onclick="go(1)">業務結構 →</button></div>
+</div>
+
+<!-- ══ 1: 業務結構 ══ -->
+<div class="section" id="sec1">
+  <div class="sec-header"><div class="sec-header-row"><div><h2>業務與收支結構</h2><p>收入來源、成本組成與幣別分佈</p></div><span class="badge badge-blue">Section 2 / 6</span></div></div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-head-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><div class="card-title">年度規模</div></div></div>
+    <div class="form-grid">
+      <div class="field"><label>年度總收入（概估）</label>
+        <select id="annualRevenue"><option value="">請選擇</option><option>USD 100萬以下</option><option>USD 100–500萬</option><option>USD 500萬–1,000萬</option><option>USD 1,000萬–5,000萬</option><option>USD 5,000萬以上</option></select></div>
+      <div class="field"><label>年度採購成本（概估）</label>
+        <select id="annualCOGS"><option value="">請選擇</option><option>USD 100萬以下</option><option>USD 100–500萬</option><option>USD 500萬–1,000萬</option><option>USD 1,000萬–5,000萬</option><option>USD 5,000萬以上</option></select></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-head-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div><div class="card-title">幣別結構</div><div class="card-hint">收入與成本各幣別佔比</div></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--gray3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">收入幣別</div>
+        <div class="field"><label>USD 佔收入 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="revUSD" oninput="sv('revUSD','revUSDv')"><span class="slider-val" id="revUSDv">0%</span></div></div>
+        <div class="field" style="margin-top:10px"><label>EUR 佔收入 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="revEUR" oninput="sv('revEUR','revEURv')"><span class="slider-val" id="revEURv">0%</span></div></div>
+        <div class="field" style="margin-top:10px"><label>JPY 佔收入 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="revJPY" oninput="sv('revJPY','revJPYv')"><span class="slider-val" id="revJPYv">0%</span></div></div>
+        <div class="field" style="margin-top:10px"><label>VND 佔收入 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="revVND" oninput="sv('revVND','revVNDv')"><span class="slider-val" id="revVNDv">0%</span></div></div>
+        <div class="field" style="margin-top:10px"><label>其他幣別 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="revOther" oninput="sv('revOther','revOtherv')"><span class="slider-val" id="revOtherv">0%</span></div></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--gray3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">成本幣別</div>
+        <div class="field"><label>USD 佔成本 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="costUSD" oninput="sv('costUSD','costUSDv')"><span class="slider-val" id="costUSDv">0%</span></div></div>
+        <div class="field" style="margin-top:10px"><label>EUR 佔成本 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="costEUR" oninput="sv('costEUR','costEURv')"><span class="slider-val" id="costEURv">0%</span></div></div>
+        <div class="field" style="margin-top:10px"><label>JPY 佔成本 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="costJPY" oninput="sv('costJPY','costJPYv')"><span class="slider-val" id="costJPYv">0%</span></div></div>
+        <div class="field" style="margin-top:10px"><label>VND 佔成本 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="costVND" oninput="sv('costVND','costVNDv')"><span class="slider-val" id="costVNDv">0%</span></div></div>
+        <div class="field" style="margin-top:10px"><label>其他幣別 %</label><div class="slider-wrap"><input type="range" min="0" max="100" step="5" value="0" id="costOther" oninput="sv('costOther','costOtherv')"><span class="slider-val" id="costOtherv">0%</span></div></div>
+      </div>
+    </div>
+    <div class="div"></div>
+    <div class="form-grid">
+      <div class="field"><label>主要客戶類型（可複選）</label>
+        <div class="pills" id="custType">
+          <div class="pill" onclick="tp(this)">台灣母公司（集團內）</div>
+          <div class="pill" onclick="tp(this)">其他台商</div>
+          <div class="pill" onclick="tp(this)">日韓外資</div>
+          <div class="pill" onclick="tp(this)">歐美外資</div>
+          <div class="pill" onclick="tp(this)">越資本地企業</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>DSO / DPO</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <select id="dso"><option value="">DSO</option><option>即期</option><option>30天內</option><option>30–60天</option><option>60–90天</option><option>90天以上</option></select>
+          <select id="dpo"><option value="">DPO</option><option>即期</option><option>30天內</option><option>30–60天</option><option>60–90天</option><option>90天以上</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sec-nav"><button class="btn" onclick="go(0)">← 返回</button><button class="btn btn-primary" onclick="go(2)">外幣收付款 →</button></div>
+</div>
+
+<!-- ══ 2: 外幣收付款 ══ -->
+<div class="section" id="sec2">
+  <div class="sec-header"><div class="sec-header-row"><div><h2>外幣收付款</h2><p>現有換匯規模與季節性規律</p></div><span class="badge badge-blue">Section 3 / 6</span></div></div>
+  <div class="card">
+    <div class="card-head"><div class="card-head-icon"><svg viewBox="0 0 24 24"><path d="M7 16l-4-4 4-4M17 8l4 4-4 4M14 4l-4 16"/></svg></div><div><div class="card-title">月均換匯量</div></div></div>
+    <div class="form-grid">
+      <div class="field"><label>月均 USD 賣出（出口收款→換VND）</label><input type="number" id="mthSell" placeholder="e.g. 600000"><span class="hint">收到USD後換成VND的月均金額</span></div>
+      <div class="field"><label>月均 USD 買入（進口付款）</label><input type="number" id="mthBuy" placeholder="e.g. 180000"><span class="hint">用VND換USD支付進口的月均金額</span></div>
+      <div class="field"><label>主要換匯銀行（目前）</label><input type="text" id="mainBank" placeholder="e.g. Vietcombank, BIDV"></div>
+      <div class="field"><label>我行目前佔換匯比例</label>
+        <select id="ourShare"><option value="">請選擇</option><option>幾乎全部 >80%</option><option>主要往來 50–80%</option><option>部分往來 20–50%</option><option>少量 &lt;20%</option><option>目前無往來</option></select></div>
+    </div>
+    <div class="div"></div>
+    <div class="field"><label>換匯高峰月份（可複選）</label>
+      <div class="pills" id="peakM">
+        <div class="pill" onclick="tp(this)">1月</div><div class="pill" onclick="tp(this)">2月</div><div class="pill" onclick="tp(this)">3月</div>
+        <div class="pill" onclick="tp(this)">4月</div><div class="pill" onclick="tp(this)">5月</div><div class="pill" onclick="tp(this)">6月</div>
+        <div class="pill" onclick="tp(this)">7月</div><div class="pill" onclick="tp(this)">8月</div><div class="pill" onclick="tp(this)">9月</div>
+        <div class="pill" onclick="tp(this)">10月</div><div class="pill" onclick="tp(this)">11月</div><div class="pill" onclick="tp(this)">12月</div>
+      </div>
+    </div>
+    <div class="div"></div>
+    <div class="form-grid">
+      <div class="field"><label>過去一年匯率損益影響</label>
+        <div class="pills" id="fxImpact">
+          <div class="pill" onclick="sp('fxImpact',this)">有，影響明顯</div>
+          <div class="pill" onclick="sp('fxImpact',this)">有，影響不大</div>
+          <div class="pill" onclick="sp('fxImpact',this)">不確定</div>
+          <div class="pill" onclick="sp('fxImpact',this)">幾乎沒有</div>
+        </div>
+      </div>
+      <div class="field"><label>影響金額概估（USD）</label><input type="number" id="fxLossAmt" placeholder="e.g. 45000"></div>
+    </div>
+  </div>
+  <div class="sec-nav"><button class="btn" onclick="go(1)">← 返回</button><button class="btn btn-primary" onclick="go(3)">現金流預測 →</button></div>
+</div>
+
+<!-- ══ 3: 現金流預測 ══ -->
+<div class="section" id="sec3">
+  <div class="sec-header"><div class="sec-header-row"><div><h2>未來 6 個月外匯曝險預測</h2><p>分開計算「需賣USD換VND」與「需買USD付款」，呈現真實避險需求</p></div><span class="badge badge-blue">Section 4 / 6</span></div></div>
+  <div class="card">
+    <div class="card-head"><div class="card-head-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><div><div class="card-title">月度外匯曝險分析</div><div class="card-hint">VND自然流入（本地銷售等）可抵銷費用需求；超出部分才需要賣USD換VND</div></div></div>
+    <table class="itbl" id="cfTable">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:11%;vertical-align:middle">月份</th>
+          <th colspan="2" style="background:#1A5A9A;text-align:center">USD 收付款（需換匯）</th>
+          <th colspan="2" style="background:#007A72;text-align:center">VND 收支（本地）</th>
+          <th colspan="2" style="background:#003F7F;text-align:center">實際外匯曝險</th>
+          <th rowspan="2" style="width:8%;vertical-align:middle">風險</th>
+        </tr>
+        <tr>
+          <th style="width:12%;background:#1A5A9A">出口收款<br><span style="font-weight:400;opacity:.8">賣USD→VND</span></th>
+          <th style="width:12%;background:#1A5A9A">進口付款<br><span style="font-weight:400;opacity:.8">買USD←VND</span></th>
+          <th style="width:13%;background:#007A72">VND自然流入<br><span style="font-weight:400;opacity:.8">本地銷售等（Bn）</span></th>
+          <th style="width:13%;background:#007A72">VND費用需求<br><span style="font-weight:400;opacity:.8">薪資租金水電（Bn）</span></th>
+          <th style="width:12%;background:#003F7F">需賣USD換VND<br><span style="font-weight:400;opacity:.8">VND缺口÷匯率</span></th>
+          <th style="width:11%;background:#003F7F;color:#FFD700">總曝險 USD<br><span style="font-weight:400;opacity:.8">避險需求</span></th>
+        </tr>
+      </thead>
+      <tbody id="cfBody"></tbody>
+    </table>
+  </div>
+  <div class="sec-nav"><button class="btn" onclick="go(2)">← 返回</button><button class="btn btn-primary" onclick="go(4)">資產負債 →</button></div>
+</div>
+
+<!-- ══ 4: 資產負債 ══ -->
+<div class="section" id="sec4">
+  <div class="sec-header"><div class="sec-header-row"><div><h2>資產負債暴露</h2><p>外幣借款、資本結構與集團資金往來</p></div><span class="badge badge-blue">Section 5 / 6</span></div></div>
+  <div class="card">
+    <div class="card-head"><div class="card-head-icon"><svg viewBox="0 0 24 24"><path d="M3 3h18v4H3zM3 10h18v4H3zM3 17h18v4H3z"/></svg></div><div><div class="card-title">外幣借款明細</div></div></div>
+    <table class="itbl">
+      <thead><tr><th>銀行 / 機構</th><th>幣別</th><th>金額</th><th>到期日</th><th>利率類型</th><th>用途</th></tr></thead>
+      <tbody id="loanBody">
+        <tr><td><input type="text" placeholder="e.g. HSBC"></td><td><select><option>USD</option><option>EUR</option><option>JPY</option></select></td><td><input type="number" placeholder="金額"></td><td><input type="text" placeholder="YYYY-MM"></td><td><select><option>固定</option><option>浮動(SOFR)</option></select></td><td><input type="text" placeholder="運營"></td></tr>
+      </tbody>
+    </table>
+    <span class="add-row" onclick="addLoan()">＋ 新增借款</span>
+  </div>
+  <div class="card">
+    <div class="card-head"><div class="card-head-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><div><div class="card-title">資本與股息</div></div></div>
+    <div class="form-grid">
+      <div class="field"><label>越南子公司資本金（USD）</label><input type="number" id="capAmt" placeholder="e.g. 8000000"></div>
+      <div class="field"><label>今年股息匯回計畫</label>
+        <div class="pills" id="divPlan"><div class="pill" onclick="sp('divPlan',this)">有，金額確定</div><div class="pill" onclick="sp('divPlan',this)">有，金額未定</div><div class="pill" onclick="sp('divPlan',this)">目前無計畫</div></div></div>
+      <div class="field"><label>股息匯回金額（USD）</label><input type="number" id="divAmt" placeholder="e.g. 1500000"></div>
+      <div class="field"><label>預計匯回時間</label><input type="text" id="divTiming" placeholder="e.g. 2025 Q3"></div>
+      <div class="field form-full"><label>集團內部資金往來說明</label><textarea id="icNote" placeholder="e.g. 每月支付台灣母公司管理費USD30K；另有母公司貸款USD2M，無息無到期日..."></textarea></div>
+    </div>
+  </div>
+  <div class="sec-nav"><button class="btn" onclick="go(3)">← 返回</button><button class="btn btn-primary" onclick="go(5)">避險狀況 →</button></div>
+</div>
+
+<!-- ══ 5: 避險狀況 ══ -->
+<div class="section" id="sec5">
+  <div class="sec-header"><div class="sec-header-row"><div><h2>現有避險狀況</h2><p>目前使用工具、決策機制與顧慮</p></div><span class="badge badge-blue">Section 6 / 6</span></div></div>
+  <div class="card">
+    <div class="card-head"><div class="card-head-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="card-title">避險工具使用</div></div></div>
+    <div class="field"><label>目前使用哪些外匯工具（可複選）</label>
+      <div class="pills" id="hedgeTools">
+        <div class="pill" onclick="tp(this)">完全不做避險</div>
+        <div class="pill" onclick="tp(this)">Spot（即期）</div>
+        <div class="pill" onclick="tp(this)">Forward（遠期）</div>
+        <div class="pill" onclick="tp(this)">Swap</div>
+        <div class="pill" onclick="tp(this)">自然避險（幣別匹配）</div>
+        <div class="pill" onclick="tp(this)">集團統一管理</div>
+      </div>
+    </div>
+    <div class="div"></div>
+    <div class="form-grid">
+      <div class="field"><label>Forward 覆蓋率</label>
+        <select id="fwdCov"><option value="">請選擇</option><option>沒有做</option><option>10%以下</option><option>10–30%</option><option>30–60%</option><option>60%以上</option></select></div>
+      <div class="field"><label>Forward 最長天期</label>
+        <select id="fwdTenor"><option value="">請選擇</option><option>沒有做</option><option>1個月</option><option>3個月</option><option>6個月</option><option>12個月以上</option></select></div>
+      <div class="field"><label>避險決策由誰主導</label>
+        <div class="pills" id="hedgeDec">
+          <div class="pill" onclick="sp('hedgeDec',this)">越南子公司自行</div>
+          <div class="pill" onclick="sp('hedgeDec',this)">台灣母公司決定</div>
+          <div class="pill" onclick="sp('hedgeDec',this)">兩邊共同</div>
+          <div class="pill" onclick="sp('hedgeDec',this)">沒有明確政策</div>
+        </div>
+      </div>
+      <div class="field"><label>對 Forward 的主要顧慮（可複選）</label>
+        <div class="pills" id="fwdConcern">
+          <div class="pill" onclick="tp(this)">VND長期貶值不想lock</div>
+          <div class="pill" onclick="tp(this)">不了解產品機制</div>
+          <div class="pill" onclick="tp(this)">文件流程麻煩</div>
+          <div class="pill" onclick="tp(this)">避險成本高</div>
+          <div class="pill" onclick="tp(this)">台灣母公司不允許</div>
+          <div class="pill" onclick="tp(this)">沒有特別顧慮</div>
+        </div>
+      </div>
+    </div>
+    <div class="div"></div>
+    <div class="field"><label>補充說明</label><textarea id="hedgeNote" placeholder="e.g. 2023年曾做過一次Forward但判斷方向錯誤，之後不敢再做..."></textarea></div>
+  </div>
+  <div class="sec-nav">
+    <button class="btn" onclick="go(4)">← 返回</button>
+    <button class="btn btn-teal" onclick="go(6);generateReport()">🔍 產出 Treasury Report →</button>
+  </div>
+</div>
+
+<!-- ══ 6: 報告 ══ -->
+<div class="section" id="sec6">
+  <div class="sec-header">
+    <div class="sec-header-row">
+      <div><h2>Treasury Intelligence Report</h2><p>基於填寫資料的外匯風險評估與避險建議</p></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="badge badge-teal" id="riskBadge" style="display:none">風險評級</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="metricRow" class="metrics" style="display:none">
+    <div class="mcard hi"><div class="ml">月均換匯量</div><div class="mv" id="mFX">—</div><div class="ms">USD / 月</div></div>
+    <div class="mcard hi"><div class="ml">年化規模</div><div class="mv" id="mAnn">—</div><div class="ms">USD</div></div>
+    <div class="mcard warn"><div class="ml">淨 USD 部位</div><div class="mv" id="mNet">—</div><div class="ms">月均淨多 / 空頭</div></div>
+    <div class="mcard" id="mRiskCard"><div class="ml">外匯風險評級</div><div class="mv" id="mRisk">—</div><div class="ms">綜合評估</div></div>
+  </div>
+
+  <div id="loadBar" class="loading-bar" style="display:none">
+    <div class="spinner"></div>
+    <span id="loadMsg">正在分析外匯暴露結構...</span>
+  </div>
+
+  <div class="report-shell">
+    <div class="report-tabs">
+      <div class="rtab active" onclick="rt('internal',this)">內部分析版（TMO）</div>
+      <div class="rtab" onclick="rt('client',this)">客戶版（給CFO）</div>
+      <div class="rtab" onclick="rt('model',this)">商業模式說明</div>
+    </div>
+    <div class="rtab-content active" id="rc-internal">
+      <div class="report-text" id="rInternal"><div class="report-placeholder">填寫完問卷後，點擊「產出報告」</div></div>
+    </div>
+    <div class="rtab-content" id="rc-client">
+      <div class="report-text" id="rClient"><div class="report-placeholder">填寫完問卷後，點擊「產出報告」</div></div>
+    </div>
+    <div class="rtab-content" id="rc-model">
+      <div style="padding:4px 0">
+        <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:14px">Treasury Intelligence 商業模式流程</div>
+        <div class="flow">
+          <div class="flow-step">客戶金流<br>進富邦</div><div class="flow-arrow">→</div>
+          <div class="flow-step accent">系統自動<br>分析</div><div class="flow-arrow">→</div>
+          <div class="flow-step">產生<br>Treasury Report</div><div class="flow-arrow">→</div>
+          <div class="flow-step teal">發現<br>FX曝險</div><div class="flow-arrow">→</div>
+          <div class="flow-step accent">產生<br>避險建議</div><div class="flow-arrow">→</div>
+          <div class="flow-step">增加<br>Forward交易</div><div class="flow-arrow">→</div>
+          <div class="flow-step teal">提高<br>Wallet Share</div><div class="flow-arrow">→</div>
+          <div class="flow-step accent">提升<br>Treasury Revenue</div>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:var(--sky);border-radius:var(--r);border-left:3px solid var(--blue)">
+          <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px">第一階段 MVP — 5家客戶試辦</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.8">
+            ① 選取 TOP 5 台商客戶<br>
+            ② 收集：未來6個月收付款預測、預算匯率、現有避險部位<br>
+            ③ 每月產出 Treasury Report<br>
+            ④ 追蹤：客戶是否增加 Forward 交易量 → 提升 Wallet Share → 增加 Revenue
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:16px;background:var(--gold-l);border-radius:var(--r);border-left:3px solid var(--gold)">
+          <div style="font-size:12px;font-weight:600;color:var(--gold);margin-bottom:4px">核心價值主張</div>
+          <div style="font-size:12px;color:var(--text2)">從「賣匯率」升級為「賣對客戶資金流的理解與掌控」——讓客戶覺得換別家銀行是風險，而不是機會。</div>
+        </div>
+      </div>
+    </div>
+    <div class="report-actions">
+      <button class="btn" onclick="copyReport()">複製內容</button>
+      <button class="btn" id="editBtn" onclick="toggleEditReport()">✏️ 編輯報告</button>
+      <button class="btn btn-ghost" onclick="go(5)">← 返回修改</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-teal" onclick="generateReport()">重新分析</button>
+      <button class="btn" onclick="exportReportPDF()" id="pdfBtn" disabled style="background:#1a5a9a;color:white;border-color:#1a5a9a">⬇ 下載 PDF 報告</button>
+      <button class="btn btn-primary" onclick="exportPPT()" id="pptBtn2" disabled>⬇ 下載 PPT</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+// ── state ──
+let cur=0, reports={internal:'',client:''};
+const TITLES=['客戶基本資料','業務與收支結構','外幣收付款','現金流預測','資產負債暴露','現有避險狀況','Treasury Report'];
+const MONTHS=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+// ── init cashflow table ──
+(function initCF(){
+  const now=new Date(); const tbody=document.getElementById('cfBody');
+  for(let i=0;i<6;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()+i+1,1);
+    const lbl=`${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}`;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="font-weight:600;color:var(--navy);text-align:center">${lbl}<br><input type="number" class="cf-rate" value="25400" style="width:68px;font-size:10px;text-align:center;border:none;border-top:1px solid var(--gray2);background:transparent;color:var(--gray3);margin-top:2px" oninput="calcCF(this.closest('tr'))" title="預算匯率"></td>
+      <td><input type="number" class="cf-in" placeholder="e.g. 600000" oninput="calcCF(this.closest('tr'))"></td>
+      <td><input type="number" class="cf-out" placeholder="e.g. 180000" oninput="calcCF(this.closest('tr'))"></td>
+      <td><input type="number" class="cf-vnd-in" placeholder="e.g. 2.0" step="0.1" oninput="calcCF(this.closest('tr'))" style="color:var(--teal)"></td>
+      <td><input type="number" class="cf-vnd-cost" placeholder="e.g. 8.5" step="0.1" oninput="calcCF(this.closest('tr'))" style="color:var(--gold)"></td>
+      <td class="cf-sell-usd" style="font-weight:600;color:var(--teal);font-size:12px">—</td>
+      <td class="cf-total-exp" style="font-weight:700;font-size:12px">—</td>
+      <td class="cf-risk" style="font-size:11px;text-align:center;font-weight:600">—</td>`;
+    tbody.appendChild(tr);
+  }
+})();
+
+function calcCF(tr){
+  const usdIn   = parseFloat(tr.querySelector('.cf-in').value)||0;       // 出口收款USD
+  const usdOut  = parseFloat(tr.querySelector('.cf-out').value)||0;      // 進口付款USD
+  const vndInB  = parseFloat(tr.querySelector('.cf-vnd-in').value)||0;   // VND自然流入 Bn
+  const vndCostB= parseFloat(tr.querySelector('.cf-vnd-cost').value)||0; // VND費用需求 Bn
+  const rate    = parseFloat(tr.querySelector('.cf-rate').value)||25400;
+
+  // VND缺口：費用 - 自然流入，若為負表示VND有剩，不需要賣USD
+  const vndGapB = vndCostB - vndInB;
+  // 需要賣USD換VND的金額（VND缺口 > 0 才需要）
+  const sellUSDforVND = vndGapB > 0 ? (vndGapB * 1e9) / rate : 0;
+
+  // 總外匯曝險 = 出口收款（賣USD）+ 需賣USD換VND + 進口付款（買USD）
+  // 方向上：賣USD是正曝險（怕VND升值），買USD是反向
+  // 總曝險用絕對值呈現（避險需求規模）
+  const totalExp = usdIn + sellUSDforVND + usdOut;
+
+  // 顯示「需賣USD換VND」
+  const sellEl = tr.querySelector('.cf-sell-usd');
+  if(vndGapB > 0){
+    sellEl.textContent = `$${(sellUSDforVND/1000).toFixed(0)}K`;
+    sellEl.style.color = 'var(--teal)';
+  } else if(vndGapB < 0){
+    sellEl.textContent = 'VND充足';
+    sellEl.style.color = 'var(--gray3)';
+  } else {
+    sellEl.textContent = '—';
+    sellEl.style.color = 'var(--gray3)';
+  }
+
+  // 總曝險
+  const expEl = tr.querySelector('.cf-total-exp');
+  const hasData = usdIn||usdOut||vndInB||vndCostB;
+  expEl.textContent = hasData ? `$${(totalExp/1000).toFixed(0)}K` : '—';
+  expEl.style.color = totalExp>500000?'var(--red)':totalExp>200000?'var(--gold)':'var(--teal)';
+
+  // 風險等級
+  const riskEl = tr.querySelector('.cf-risk');
+  if(!hasData){ riskEl.textContent='—'; riskEl.style.color='var(--gray3)'; return; }
+  if(totalExp>600000){ riskEl.textContent='高'; riskEl.style.color='var(--red)'; }
+  else if(totalExp>300000){ riskEl.textContent='中'; riskEl.style.color='var(--gold)'; }
+  else { riskEl.textContent='低'; riskEl.style.color='var(--teal)'; }
+}
+
+// ── nav ──
+function go(n){
+  document.querySelectorAll('.section').forEach((s,i)=>s.classList.toggle('active',i===n));
+  document.querySelectorAll('[id^=nav]').forEach((el,i)=>{
+    el.classList.toggle('active',i===n);
+    if(i<n) el.classList.add('done'); else if(i>n) el.classList.remove('done');
+  });
+  cur=n;
+  document.getElementById('tbTitle').textContent=TITLES[n];
+  document.getElementById('progFill').style.width=((n+1)/7*100)+'%';
+  document.getElementById('progTxt').textContent=`步驟 ${n+1} / 7`;
+  window.scrollTo(0,0);
+}
+
+// ── pills ──
+function tp(el){el.classList.toggle('on')}
+function sp(gid,el){document.querySelectorAll(`#${gid} .pill`).forEach(p=>p.classList.remove('on'));el.classList.add('on')}
+function sv(id,vid){document.getElementById(vid).textContent=document.getElementById(id).value+'%'}
+function pills(id){return[...document.querySelectorAll(`#${id} .pill.on`)].map(p=>p.textContent).join('、')||'未填'}
+
+// ── loan rows ──
+function addLoan(){
+  const t=document.getElementById('loanBody');
+  const r=t.rows[0].cloneNode(true);
+  r.querySelectorAll('input').forEach(i=>i.value='');
+  t.appendChild(r);
+}
+
+// ── collect ──
+function collect(){
+  const g=id=>{const e=document.getElementById(id);return e?e.value:''};
+  // cashflow
+  const cf=[];
+  document.querySelectorAll('#cfBody tr').forEach(tr=>{
+    const cells=tr.querySelectorAll('td');
+    const inn    = parseFloat(tr.querySelector('.cf-in')?.value)||0;
+    const out    = parseFloat(tr.querySelector('.cf-out')?.value)||0;
+    const vndInB = parseFloat(tr.querySelector('.cf-vnd-in')?.value)||0;
+    const vndCostB=parseFloat(tr.querySelector('.cf-vnd-cost')?.value)||0;
+    const rate   = parseFloat(tr.querySelector('.cf-rate')?.value)||25400;
+    const vndGapB= vndCostB - vndInB;
+    const sellUSDforVND = vndGapB>0 ? Math.round((vndGapB*1e9)/rate) : 0;
+    const totalExp = inn + sellUSDforVND + out;
+    if(inn||out||vndInB||vndCostB) cf.push({
+      month: cells[0]?.textContent?.split('\n')[0]?.trim(),
+      inflow:inn, outflow:out,
+      vndInflow:vndInB, vndCost:vndCostB, vndGap:Math.round(vndGapB*100)/100,
+      sellUSDforVND, totalExposure:Math.round(totalExp), rate
+    });
+  });
+  // loans
+  const loans=[];
+  document.querySelectorAll('#loanBody tr').forEach(tr=>{
+    const c=tr.querySelectorAll('input,select');
+    if(c[2]?.value) loans.push({bank:c[0]?.value,ccy:c[1]?.value,amt:c[2]?.value,maturity:c[3]?.value,type:c[4]?.value,purpose:c[5]?.value});
+  });
+  return{
+    company:g('companyVN')||'Demo客戶',companyTW:g('companyTW'),industry:g('industry'),location:g('location'),
+    headcount:g('headcount'),foundedYear:g('foundedYear'),contact:g('contactName'),note:g('companyNote'),
+    annualRevenue:g('annualRevenue'),annualCOGS:g('annualCOGS'),
+    revUSD:g('revUSD')+'%',revEUR:g('revEUR')+'%',revJPY:g('revJPY')+'%',revVND:g('revVND')+'%',revOther:g('revOther')+'%',
+    costUSD:g('costUSD')+'%',costEUR:g('costEUR')+'%',costJPY:g('costJPY')+'%',costVND:g('costVND')+'%',costOther:g('costOther')+'%',
+    custType:pills('custType'),dso:g('dso'),dpo:g('dpo'),
+    mthSell:g('mthSell')||0,mthBuy:g('mthBuy')||0,mainBank:g('mainBank'),ourShare:g('ourShare'),
+    peakMonths:pills('peakM'),fxImpact:pills('fxImpact'),fxLossAmt:g('fxLossAmt'),
+    cashflow:cf,
+    loans,capAmt:g('capAmt'),divPlan:pills('divPlan'),divAmt:g('divAmt'),divTiming:g('divTiming'),icNote:g('icNote'),
+    hedgeTools:pills('hedgeTools'),fwdCov:g('fwdCov'),fwdTenor:g('fwdTenor'),
+    hedgeDec:pills('hedgeDec'),fwdConcern:pills('fwdConcern'),hedgeNote:g('hedgeNote'),
+  };
+}
+
+// ── metrics ──
+function showMetrics(d){
+  const sell=parseFloat(d.mthSell)||0, buy=parseFloat(d.mthBuy)||0;
+  const net=sell-buy, ann=(sell+buy)*12;
+  const revU=parseInt(d.revUSD)||0, costU=parseInt(d.costUSD)||0;
+  const gap=Math.abs(revU-costU);
+  const risk=gap>40?'高':gap>20?'中高':'中';
+  const riskColor=gap>40?'var(--red)':gap>20?'var(--gold)':'var(--teal)';
+  document.getElementById('mFX').textContent=sell||buy?`$${((sell+buy)/1000).toFixed(0)}K`:'—';
+  document.getElementById('mAnn').textContent=ann?`$${(ann/1e6).toFixed(1)}M`:'—';
+  document.getElementById('mNet').textContent=net?`${net>0?'+':''}$${(net/1000).toFixed(0)}K`:'—';
+  document.getElementById('mRisk').textContent=risk;
+  document.getElementById('mRiskCard').style.borderTopColor=riskColor;
+  document.getElementById('mRisk').style.color=riskColor;
+  const rb=document.getElementById('riskBadge');
+  rb.textContent=`外匯風險：${risk}`;
+  rb.className=`badge ${gap>40?'badge-red':gap>20?'badge-gold':'badge-teal'}`;
+  rb.style.display='inline-flex';
+  document.getElementById('metricRow').style.display='grid';
+}
+
+// ── generate ──
+async function generateReport(){
+  go(6);
+  const d=collect();
+  showMetrics(d);
+  document.getElementById('genBtn').disabled=true;
+  document.getElementById('pptBtn').disabled=true;
+  document.getElementById('pptBtn2').disabled=true;
+  const lb=document.getElementById('loadBar'); lb.style.display='flex';
+  const lm=document.getElementById('loadMsg');
+
+  const cfStr=d.cashflow.length
+    ? d.cashflow.map(r=>`  ${r.month}: 出口收款USD${r.inflow.toLocaleString()} / 進口付款USD${r.outflow.toLocaleString()} / VND自然流入${r.vndInflow}Bn / VND費用${r.vndCost}Bn / VND缺口${r.vndGap}Bn / 需賣USD換VND:USD${r.sellUSDforVND.toLocaleString()} / 總外匯曝險USD${r.totalExposure.toLocaleString()} / 匯率${r.rate}`).join('\n')
+    : '  （未填寫現金流預測）';
+  const loanStr=d.loans.length
+    ? d.loans.map(l=>`  - ${l.bank} ${l.ccy} ${l.amt}（到期${l.maturity}，${l.type}利率）`).join('\n')
+    : '  無外幣借款';
+
+  const base=`你是一位頂尖的企業外匯風險顧問，服務越南台資企業。分析語言：繁體中文。
+
+【客戶資料】
+公司：${d.company}（台灣母公司：${d.companyTW}）
+產業：${d.industry}，地點：${d.location}，員工：${d.headcount}
+財務聯絡人：${d.contact}
+背景備註：${d.note}
+
+【業務收支結構】
+年度收入：${d.annualRevenue}，年度採購：${d.annualCOGS}
+收入幣別：USD ${d.revUSD} / EUR ${d.revEUR} / JPY ${d.revJPY} / VND ${d.revVND} / 其他 ${d.revOther}
+成本幣別：USD ${d.costUSD} / EUR ${d.costEUR} / JPY ${d.costJPY} / VND ${d.costVND} / 其他 ${d.costOther}
+主要客戶：${d.custType}，DSO：${d.dso}，DPO：${d.dpo}
+
+【外幣收付款】
+月均賣出USD（出口→VND）：${d.mthSell}
+月均買入USD（進口付款）：${d.mthBuy}
+主要換匯行：${d.mainBank}，我行佔比：${d.ourShare}
+換匯高峰：${d.peakMonths}
+過去匯損：${d.fxImpact}，概估金額：USD ${d.fxLossAmt}
+
+【未來6個月現金流預測】
+${cfStr}
+
+【資產負債暴露】
+外幣借款：
+${loanStr}
+資本金：USD ${d.capAmt}
+股息匯回：${d.divPlan}，金額USD ${d.divAmt}，時間：${d.divTiming}
+集團資金：${d.icNote}
+
+【現有避險狀況】
+使用工具：${d.hedgeTools}
+Forward覆蓋率：${d.fwdCov}，最長天期：${d.fwdTenor}
+決策方式：${d.hedgeDec}
+顧慮：${d.fwdConcern}
+補充：${d.hedgeNote}
+
+越南市場背景：可用產品 Spot / Forward / Swap / CCS。VND長期貶值趨勢，央行管制USD/VND，Spot利差薄。Forward有利差空間。`;
+
+  const intPrompt=base+`
+
+請產出一份詳盡的【TMO內部分析報告】，必須涵蓋以下所有層次的外匯曝險，不得遺漏：
+
+一、全口徑外匯曝險快照
+① 流量曝險：月均淨USD部位（賣USD-買USD），EUR、JPY如有暴露請分別計算
+② 帳期曝險（DSO/DPO）：
+   - DSO ${d.dso}：在途應收USD = 月均出口收款 × DSO天數/30，暴露於VND升值風險
+   - DPO ${d.dpo}：在途應付USD = 月均進口付款 × DPO天數/30，暴露於VND貶值風險
+   - 淨帳期敞口 = 在途應收 - 在途應付
+③ 資產負債暴露：外幣借款幣別、金額、到期日，USD借款是否由USD收入自然對沖，非USD借款跨幣種風險
+④ 股息/資本匯回：金額、時機、集中風險
+⑤ 集團內部往來（Intercompany）：管理費、母公司貸款等隱性外幣現金流
+⑥ 整合總曝險 = ①+②+③+④+⑤，給出風險評級（高/中高/中/低）+ 3條理由
+
+二、幣種分析（EUR/JPY如有暴露必須單獨分析）
+- EUR暴露：收入EUR佔比${d.revEUR}，成本EUR佔比${d.costEUR}，淨EUR部位
+- JPY暴露：收入JPY佔比${d.revJPY}，成本JPY佔比${d.costJPY}，淨JPY部位
+- 各幣種自然避險程度，未對沖的淨跨幣種風險金額
+
+三、關鍵洞察（至少5點，每點含具體金額）
+- 客戶自己可能沒意識到的多層風險（流量+帳期+負債疊加後的真實曝險）
+- 旺季月份 vs DSO帳期疊加的雙重風險高峰
+- EUR/JPY若有暴露，與USD的相關性及分散或集中效果
+- 過去匯損${d.fxLossAmt?'USD '+d.fxLossAmt:'未填'}的可避免性分析
+
+四、全口徑情境模擬（必須含三層）
+對 VND升值2% / VND升值5% / VND貶值3% 三種情境，分別計算：
+- 流量損益（月均換匯）
+- 帳期損益（在途AR/AP）
+- 負債BS影響（USD借款VND等值）
+- 各情境合計損益
+
+五、分層避險建議（必須包含基礎方案與進階方案兩個層次）
+
+【基礎方案：成本面避險（入門首選，最低建議）】
+- 概念：鎖定每月固定VND支出需求（薪資/租金/水電），而非從收入面出發
+- 優點：金額固定、日期固定、一次做12個月、無需每月操作、不存在超額避險風險
+- 對象：特別適合想保留USD帳戶的客戶（只換「必須換的VND」，其餘USD繼續持有享受VND貶值）
+- 建議工具：Sell USD/Buy VND Forward，12個月期，按月交割
+- 建議金額：月均VND固定成本換算USD金額（薪資+租金+水電等，從現金流預測或成本結構估算）
+- 銷售話術：「你每個月薪資發薪日要付的VND，我們今天就幫你鎖好12個月，一勞永逸，不用再擔心匯率。」
+
+【進階方案：收入面分層避險（對VND匯率敏感度高的客戶）】
+Layer 1 - USD流量Forward：金額 = 月均淨多頭USD × 建議覆蓋率，天期與旺季配合
+Layer 1B（替代Layer 1，擇一執行，勿同時推）- DSO帳期精準Forward：Layer 1與Layer 1B底層是同一批USD AR，勿同時建議。Layer 1適合收款時點穩定的客戶（月滾動），Layer 1B適合DSO較長或收款時點不規律的客戶（每張發票對應一筆Forward）。金額 = 月均換匯量 × DSO天數/30 × 50-80%
+Layer 3 - EUR與JPY各幣種分開處理（兩個獨立幣對，勿混淆為EUR/JPY交叉盤）
+Layer 4 - 借款對沖（如有非USD借款需評估CCS）
+Layer 5 - 股息匯回規劃
+- 每個Layer具體金額、工具、天期、時間點
+- 針對客戶顧慮「${d.fwdConcern}」的應對話術
+
+六、拜訪行動清單
+- 本次拜訪要確認的3個問題（包含EUR/JPY流量確認、DSO實際天數、借款詳細資訊）
+- 要帶的分析材料
+- 各Layer預估可成交金額與年度Forward revenue估算`;
+
+  const cliPrompt=base+`
+
+請產出一份【給客戶CFO的Treasury Intelligence Report】，定位是：讓CFO感受到「這家銀行真的懂我的公司」。語氣：專業、客觀、站在客戶立場，不是推銷話術。
+
+Executive Summary
+3句話：① 公司整體外匯風險特徵（含幣種結構）② 目前最大的一個未受控風險 ③ 最優先建議的一個行動
+
+一、全口徑外匯曝險分析
+以表格呈現三層曝險：
+
+| 曝險層次 | 幣別 | 金額（月均） | 主要風險 |
+|---------|-----|------------|--------|
+| 流量（買賣換匯）| USD/EUR/JPY | 計算值 | VND升/貶值 |
+| 帳期（DSO/DPO）| USD | 計算值 | 帳期內匯率波動 |
+| 負債（外幣借款）| 各幣別 | 填寫值 | 幣別錯配/利率 |
+| 股息/資本匯回 | USD | 填寫值 | 時間集中風險 |
+
+說明旺季月份與DSO帳期疊加的雙重風險高峰。
+EUR暴露${d.revEUR}%、JPY暴露${d.revJPY}%如有數值請單獨分析跨幣種風險。
+
+二、風險量化
+- Treasury Health Score（0-100分）：評估維度含避險覆蓋率、現金流可預測性、資產負債匹配度、幣種集中度
+- 匯率波動1%時，各層次損益影響分解（流量/帳期/負債分開列示）
+
+三、全口徑壓力測試
+| 情境 | 流量損益 | 帳期損益 | 負債BS影響 | 合計 |
+VND升值2% / VND升值5% / VND貶值3%（含具體金額）
+
+四、避險方案建議
+
+方案零（基礎，最低建議）：成本面避險
+- 概念：鎖定每月固定VND支出（薪資/租金/水電）的換匯需求，一次做12個月Forward
+- 特別適合：希望保留USD帳戶、只換必要VND的公司
+- 金額確定、日期確定、操作最簡單，是入門門檻最低的方案
+- 用一句話描述給CFO：「把你每月一定要換的那部分固定下來，其他的USD你繼續留著。」
+
+方案A（積極）：基礎方案 + 收入面全覆蓋
+- 在方案零基礎上，加做USD流量Forward（60%覆蓋率，滾動執行）
+- 適合P&L對VND匯率敏感、需要鎖定整體利潤的公司
+
+方案B（保守）：基礎方案 + 旺季加強
+- 在方案零基礎上，只在換匯旺季月份加做Forward
+- 門檻低，易被接受
+
+各方案年化避險成本估算 vs 不避險潛在損失對比
+
+五、下個月起所需資料清單（具體列出，讓CFO知道如何配合）`;
+
+  try{
+    lm.textContent='正在分析外匯暴露結構（1/2）...';
+    const [ir,cr]=await Promise.all([callClaude(intPrompt),callClaude(cliPrompt)]);
+    reports.internal=ir; reports.client=cr;
+    document.getElementById('rInternal').innerHTML=marked.parse(ir);
+    document.getElementById('rClient').innerHTML=marked.parse(cr);
+    lb.style.display='none';
+    document.getElementById('genBtn').disabled=false;
+    document.getElementById('pptBtn').disabled=false;
+    document.getElementById('pptBtn2').disabled=false;
+    document.getElementById('pdfBtn').disabled=false;
+    window._rd={...d,reportInternal:ir,reportClient:cr};
+  }catch(e){
+    lm.textContent='錯誤：'+e.message;
+    document.getElementById('genBtn').disabled=false;
+  }
+}
+
+// ── API Key management ──
+function getApiKey(){ return localStorage.getItem('ti_api_key')||'' }
+function openApiModal(){
+  document.getElementById('apiKeyInput').value=getApiKey();
+  document.getElementById('apiModal').style.display='flex';
+}
+function closeApiModal(){ document.getElementById('apiModal').style.display='none' }
+function saveApiKey(){
+  const k=document.getElementById('apiKeyInput').value.trim();
+  if(!k){alert('請輸入 API Key');return}
+  localStorage.setItem('ti_api_key',k);
+  updateApiStatus();
+  closeApiModal();
+}
+function updateApiStatus(){
+  const k=getApiKey();
+  const dot=document.getElementById('apiDot');
+  const txt=document.getElementById('apiStatusTxt');
+  if(k){ dot.classList.add('ok'); txt.textContent='API Key 已設定'; }
+  else { dot.classList.remove('ok'); txt.textContent='設定 API Key'; }
+}
+updateApiStatus();
+
+async function callClaude(prompt){
+  const key=getApiKey();
+  if(!key){ openApiModal(); throw new Error('請先設定 Claude API Key') }
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key': key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,messages:[{role:'user',content:prompt}]})
+  });
+  if(!r.ok){
+    const err=await r.json().catch(()=>({}));
+    throw new Error(err?.error?.message||'API 錯誤 '+r.status);
+  }
+  const d=await r.json();
+  return d.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+}
+
+// ── tabs ──
+function rt(name,el){
+  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.rtab-content').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('rc-'+name).classList.add('active');
+}
+
+function copyReport(){
+  const tab=document.querySelector('.rtab.active')?.textContent?.includes('內部')?'internal':'client';
+  const txt=reports[tab]||document.querySelector('.rtab-content.active .report-text')?.innerText||'';
+  navigator.clipboard.writeText(txt).then(()=>{alert('已複製到剪貼簿')});
+}
+
+function toggleEditReport(){
+  const activeEl=document.querySelector('.rtab-content.active .report-text');
+  if(!activeEl) return;
+  const editing=activeEl.contentEditable==='true';
+  activeEl.contentEditable=editing?'false':'true';
+  activeEl.style.outline=editing?'none':'2px solid var(--blue)';
+  activeEl.style.borderRadius=editing?'':'6px';
+  activeEl.style.padding=editing?'':'8px';
+  const btn=document.getElementById('editBtn');
+  btn.textContent=editing?'✏️ 編輯報告':'✓ 完成編輯';
+  btn.style.background=editing?'':'var(--blue)';
+  btn.style.color=editing?'':'white';
+  btn.style.borderColor=editing?'':'var(--blue)';
+  if(!editing) activeEl.focus();
+}
+
+function exportReportPDF(){
+  const isClient=document.querySelector('.rtab.active')?.textContent?.includes('客戶');
+  const el=document.getElementById(isClient?'rClient':'rInternal');
+  if(!el||!el.innerHTML||el.querySelector('.report-placeholder')){alert('請先產出報告');return;}
+  const company=document.getElementById('companyVN')?.value||'客戶';
+  const companyTW=document.getElementById('companyTW')?.value||'';
+  const contact=document.getElementById('contactName')?.value||'';
+  const date=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
+  const title=isClient?'Treasury Intelligence Report（客戶版）':'Treasury Intelligence Report（TMO內部版）';
+  const reportHTML=el.innerHTML;
+
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html>
+<html lang="zh-TW"><head>
+<meta charset="UTF-8">
+<title>${title} - ${company}</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:18mm 16mm 22mm 16mm}
+body{font-family:'DM Sans',sans-serif;font-size:10pt;color:#0D1B35;line-height:1.75;background:white;padding-bottom:20mm}
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2.5px solid #003F7F;padding-bottom:10px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{width:36px;height:36px;border-radius:6px;background:white;border:1.5px solid #E0E0E0;display:flex;align-items:center;justify-content:center;overflow:hidden}.brand-icon svg{width:32px;height:32px}
+.brand-icon svg{fill:white;width:16px;height:16px}
+.brand-name{font-family:'DM Serif Display',serif;font-size:14pt;color:#003F7F;line-height:1.2}
+.brand-sub{font-size:7.5pt;color:#8895B0;text-transform:uppercase;letter-spacing:.08em}
+.report-meta{text-align:right;font-size:8.5pt;color:#4A5568;line-height:1.8}
+.report-meta strong{color:#003F7F}
+.confidential-banner{background:#003F7F;color:white;font-size:8pt;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:5px 12px;border-radius:4px;margin-bottom:18px;display:inline-block}
+${isClient?'':'.confidential-banner{background:#C0392B}'}
+h1{font-family:"DM Serif Display",serif;font-size:20pt;color:#003F7F;margin:22px 0 8px;padding-bottom:6px;border-bottom:1.5px solid #C8DEFF}
+h2{font-family:"DM Serif Display",serif;font-size:14pt;color:#003F7F;margin:18px 0 6px}
+h3{font-size:11pt;font-weight:600;color:#0066CC;margin:14px 0 4px}
+p{margin:5px 0;line-height:1.8}
+strong{color:#003F7F}
+ul,ol{padding-left:18px;margin:6px 0}
+li{margin:3px 0;line-height:1.7}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:9pt;page-break-inside:avoid}
+th{background:#003F7F;color:white;padding:7px 10px;text-align:left;font-size:8.5pt}
+td{padding:6px 10px;border-bottom:1px solid #EDF0F7}
+tr:nth-child(even) td{background:#F4F6FA}
+hr{border:none;border-top:1px solid #D0D8E8;margin:14px 0}
+blockquote{border-left:3px solid #00A99D;padding:8px 14px;background:#E0F5F4;margin:10px 0;border-radius:0 6px 6px 0;font-size:9.5pt}
+code{background:#EDF0F7;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:9pt}
+.page-footer{position:fixed;bottom:6mm;left:16mm;right:16mm;border-top:1px solid #D0D8E8;padding-top:4px;display:flex;justify-content:space-between;font-size:7pt;color:#8895B0;background:white}
+@media print{.page-footer{display:flex}}
+</style>
+</head><body>
+<div class="page-header">
+  <div class="brand">
+    <div class="brand-icon"><img src="data:image/png;base64,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" style="width:30px;height:30px;object-fit:contain;"></div>
+    <div><div class="brand-name">台北富邦銀行</div><div class="brand-sub">Treasury Marketing Unit · Vietnam</div></div>
+  </div>
+  <div class="report-meta">
+    <div><strong>${company}</strong>${companyTW?' ｜ '+companyTW:''}</div>
+    <div>財務聯絡人：${contact||'—'}</div>
+    <div>報告日期：${date}</div>
+  </div>
+</div>
+<div class="confidential-banner">${isClient?'CONFIDENTIAL — 僅供 CFO 參閱':'CONFIDENTIAL — TMO Internal Use Only'}</div>
+<div class="report-body">${reportHTML}</div>
+<div class="page-footer">
+  <span>台北富邦銀行 Treasury Marketing Unit</span>
+  <span>${company} · ${date}</span>
+  <span>Confidential</span>
+</div>
+</body></html>`);
+  setTimeout(()=>{try{win.print();}catch(e){}},800);
+  win.document.close();
+}
+
+// ── PPT export (PptxGenJS browser-only) ──
+async function exportPPT(){
+  const d=window._rd; if(!d){alert('請先產出分析報告再下載');return}
+  const b1=document.getElementById('pptBtn'),b2=document.getElementById('pptBtn2');
+  b1.disabled=b2.disabled=true; b1.textContent='產出中...';
+  try{
+    const prs = new PptxGenJS();
+    prs.layout = 'LAYOUT_WIDE'; // 16:9
+    const date = new Date().toLocaleDateString('zh-TW');
+    const company = d.company || '客戶';
+    const analyst = d.contact || 'TMO';
+
+    // ── colour palette ──
+    const NAVY='003F7F', BLUE='0066CC', TEAL='00A99D', TEAL_L='E0F5F4',
+          GOLD='B8860B', GOLD_L='FDF6E3', RED='C0392B', RED_L='FDECEA',
+          GRAY0='F4F6FA', GRAY1='EDF0F7', GRAY2='D0D8E8', GRAY3='8895B0',
+          WHITE='FFFFFF', BLACK='0D1B35';
+
+    // helper: risk colours
+    const sell=parseFloat(d.mthSell)||0, buy=parseFloat(d.mthBuy)||0;
+    const revU=parseInt(d.revUSD)||0, costU=parseInt(d.costUSD)||0;
+    const gap=Math.abs(revU-costU);
+    const riskLbl=gap>40?'高':gap>20?'中高':'中';
+    const riskCol=gap>40?RED:gap>20?GOLD:TEAL;
+    const totalFX=(sell+buy);
+    const annual=totalFX*12;
+    const netUSD=sell-buy;
+
+    // ── shared exposure variables (used across slides) ──
+    const dsoMap={'即期':0,'30天內':20,'30–60天':45,'60–90天':75,'90天以上':100};
+    const dsoDays=dsoMap[d.dso]||30, dpoDays=dsoMap[d.dpo]||30;
+    const arInTransit=Math.round(sell*dsoDays/30);   // 帳期內在途應收 USD
+    const apInTransit=Math.round(buy*dpoDays/30);    // 帳期內在途應付 USD
+    const validLoansAll=(d.loans||[]).filter(l=>l.amt);
+    const usdLoansAmt=validLoansAll.filter(l=>!l.ccy||l.ccy==='USD').reduce((s,l)=>s+(parseInt(l.amt)||0),0);
+    const totalLoanAmt=validLoansAll.reduce((s,l)=>s+(parseInt(l.amt)||0),0);
+
+    // ════════════════════════════════════════
+    // SLIDE 1 — 封面
+    // ════════════════════════════════════════
+    const s1 = prs.addSlide();
+    // bg
+    s1.addShape(prs.ShapeType.rect,{x:0,y:0,w:'100%',h:'100%',fill:{color:NAVY}});
+    // teal accent left bar
+    s1.addShape(prs.ShapeType.rect,{x:0,y:0,w:0.15,h:'100%',fill:{color:TEAL}});
+    // teal badge top
+    s1.addShape(prs.ShapeType.rect,{x:0.4,y:0.3,w:4.2,h:0.35,fill:{color:TEAL},rectRadius:0.05});
+    s1.addText('TREASURY INTELLIGENCE REPORT',{x:0.45,y:0.31,w:4.1,h:0.3,fontSize:9,bold:true,color:WHITE,fontFace:'Arial'});
+    // company name
+    s1.addText(company,{x:0.4,y:0.9,w:8,h:0.8,fontSize:32,bold:true,color:WHITE,fontFace:'Arial'});
+    // subtitle
+    s1.addText('外匯風險評估 ｜ 現金流管理 ｜ 避險建議方案',{x:0.4,y:1.75,w:9,h:0.25,fontSize:14,color:'9FE1CB',fontFace:'Arial'});
+    // separator line
+    s1.addShape(prs.ShapeType.line,{x:0.4,y:2.25,w:9.2,h:0,line:{color:'1A5A9A',width:1}});
+    // meta
+    s1.addText(`分析日期：${date}　｜　台北富邦銀行 Treasury Marketing Unit　｜　分析師：${analyst}`,
+      {x:0.4,y:2.4,w:9.2,h:0.3,fontSize:11,color:GRAY3,fontFace:'Arial'});
+    // confidential bottom
+    s1.addText('CONFIDENTIAL — FOR AUTHORIZED RECIPIENTS ONLY',
+      {x:0.4,y:6.8,w:9.2,h:0.25,fontSize:9,color:'9FE1CB',fontFace:'Arial'});
+
+    // ════════════════════════════════════════
+    // SLIDE 2 — 摘要 & KPI
+    // ════════════════════════════════════════
+    const s2 = prs.addSlide();
+    s2.addShape(prs.ShapeType.rect,{x:0,y:0,w:'100%',h:0.7,fill:{color:NAVY}});
+    s2.addShape(prs.ShapeType.rect,{x:0,y:0,w:0.08,h:'100%',fill:{color:TEAL}});
+    s2.addText('02  執行摘要 & 關鍵指標',{x:0.2,y:0.15,w:9,h:0.4,fontSize:16,bold:true,color:WHITE,fontFace:'Arial'});
+
+    // 4 KPI cards
+    // full-scope exposure for KPI (computed here for slide 2, shared vars used)
+    const s2dsoDays=dsoMap[d.dso]||30, s2dpoDays=dsoMap[d.dpo]||30;
+    const s2arIT=Math.round(sell*s2dsoDays/30), s2apIT=Math.round(buy*s2dpoDays/30);
+    const s2totalExp=Math.abs(netUSD)+Math.abs(s2arIT-s2apIT)+totalLoanAmt/12;
+    const kpis=[
+      {l:'月均換匯量',      v: totalFX>0?'$'+(totalFX/1000).toFixed(0)+'K':'—', s:'USD流量/月',     ac:BLUE,  bg:GRAY1},
+      {l:'淨帳期在途曝險',  v: s2arIT>0?'$'+((s2arIT-s2apIT)/1000).toFixed(0)+'K':'—',             s:'DSO-DPO/月',    ac:GOLD, bg:GOLD_L},
+      {l:'全口徑月均曝險',  v: s2totalExp>0?'$'+(s2totalExp/1000).toFixed(0)+'K':'—',               s:'流量+帳期+負債', ac:RED,  bg:RED_L},
+      {l:'外匯風險評級',    v: riskLbl,                                           s:'綜合評估',      ac:riskCol,bg:riskLbl==='高'?RED_L:GOLD_L},
+    ];
+    kpis.forEach((k,i)=>{
+      const x=0.25+i*2.45;
+      s2.addShape(prs.ShapeType.rect,{x,y:0.85,w:2.3,h:1.4,fill:{color:k.bg},line:{color:GRAY2,width:0.5},rectRadius:0.06});
+      s2.addShape(prs.ShapeType.rect,{x,y:0.85,w:2.3,h:0.06,fill:{color:k.ac}});
+      s2.addText(k.l,{x,y:0.92,w:2.3,h:0.3,fontSize:10,bold:true,color:GRAY3,align:'center',fontFace:'Arial'});
+      s2.addText(k.v,{x,y:1.25,w:2.3,h:0.5,fontSize:24,bold:true,color:k.ac,align:'center',fontFace:'Arial'});
+      s2.addText(k.s,{x,y:1.88,w:2.3,h:0.25,fontSize:10,color:GRAY3,align:'center',fontFace:'Arial'});
+    });
+
+    // exec summary box
+    s2.addShape(prs.ShapeType.rect,{x:0.25,y:2.45,w:9.5,h:0.06,fill:{color:BLUE}});
+    s2.addShape(prs.ShapeType.rect,{x:0.25,y:2.51,w:9.5,h:1.5,fill:{color:'E8F2FF'},line:{color:BLUE,width:0.5}});
+    s2.addText('Executive Summary',{x:0.4,y:2.55,w:9,h:0.3,fontSize:11,bold:true,color:NAVY,fontFace:'Arial'});
+    const execTxt = d.reportClient
+      ? d.reportClient.split('\n').slice(0,3).join(' ').substring(0,300)
+      : `${company}收入${d.revUSD}為USD，成本${d.costVND}為VND，形成結構性外匯暴露。月均換匯量約$${totalFX?((totalFX)/1000).toFixed(0)+'K':'—'}，外匯風險評級：${riskLbl}。`;
+    s2.addText(execTxt,{x:0.4,y:2.9,w:9.2,h:1.0,fontSize:12,color:BLACK,fontFace:'Arial',valign:'top'});
+
+    // client & structure info table
+    s2.addShape(prs.ShapeType.rect,{x:0.25,y:4.15,w:9.5,h:0.35,fill:{color:NAVY}});
+    s2.addText('客戶基本資料',{x:0.35,y:4.2,w:9,h:0.25,fontSize:10,bold:true,color:WHITE,fontFace:'Arial'});
+    const infoRows=[
+      [['公司（越南）',company],['台灣母公司',d.companyTW||'—'],['產業',d.industry||'—'],['地點',d.location||'—']],
+      [['財務聯絡人',d.contact||'—'],['成立年份',d.foundedYear||'—'],['往來銀行',d.mainBank||'—'],['我行佔比',d.ourShare||'—']],
+    ];
+    infoRows.forEach((row,ri)=>{
+      const ry=4.5+ri*0.4;
+      if(ri%2===0) s2.addShape(prs.ShapeType.rect,{x:0.25,y:ry,w:9.5,h:0.38,fill:{color:GRAY0}});
+      row.forEach((cell,ci)=>{
+        const cx=0.35+ci*2.38;
+        s2.addText(cell[0]+':',{x:cx,y:ry+0.05,w:1.0,h:0.28,fontSize:9.5,bold:true,color:GRAY3,fontFace:'Arial'});
+        s2.addText(cell[1],{x:cx+1.0,y:ry+0.05,w:1.3,h:0.28,fontSize:9.5,color:BLACK,fontFace:'Arial'});
+      });
+    });
+
+    // ════════════════════════════════════════
+    // SLIDE 3 — 外匯收支結構
+    // ════════════════════════════════════════
+    const s3 = prs.addSlide();
+    s3.addShape(prs.ShapeType.rect,{x:0,y:0,w:'100%',h:0.7,fill:{color:NAVY}});
+    s3.addShape(prs.ShapeType.rect,{x:0,y:0,w:0.08,h:'100%',fill:{color:TEAL}});
+    s3.addText('03  外匯收支結構分析',{x:0.2,y:0.15,w:9,h:0.4,fontSize:16,bold:true,color:WHITE,fontFace:'Arial'});
+
+    // currency structure bars
+    const barY=0.9;
+    const revEurU=parseInt(d.revEUR)||0, revJpyU=parseInt(d.revJPY)||0;
+    const costEurU=parseInt(d.costEUR)||0, costJpyU=parseInt(d.costJPY)||0;
+    const EUR_COLOR='7B4FBE', JPY_COLOR='D97706'; // purple, amber
+    const bars=[
+      {label:'收入幣別',usd:revU,eur:revEurU,jpy:revJpyU,vnd:parseInt(d.revVND)||0,other:parseInt(d.revOther)||0},
+      {label:'成本幣別',usd:costU,eur:costEurU,jpy:costJpyU,vnd:parseInt(d.costVND)||0,other:parseInt(d.costOther)||0},
+    ];
+    bars.forEach((b,bi)=>{
+      const by=barY+bi*1.1;
+      s3.addText(b.label,{x:0.3,y:by,w:1.5,h:0.3,fontSize:11,bold:true,color:NAVY,fontFace:'Arial'});
+      const barX=2.0, barW=6.0, barH=0.45;
+      const segments=[
+        {val:b.usd,  color:BLUE,      label:`USD ${b.usd}%`},
+        {val:b.eur,  color:EUR_COLOR, label:`EUR ${b.eur}%`},
+        {val:b.jpy,  color:JPY_COLOR, label:`JPY ${b.jpy}%`},
+        {val:b.vnd,  color:TEAL,      label:`VND ${b.vnd}%`},
+        {val:b.other,color:GRAY3,     label:`其他 ${b.other}%`},
+      ];
+      let cx2=barX;
+      segments.forEach(seg=>{
+        if(seg.val<=0) return;
+        const sw=(seg.val/100)*barW;
+        s3.addShape(prs.ShapeType.rect,{x:cx2,y:by,w:sw,h:barH,fill:{color:seg.color}});
+        // always show label inside if wide enough, otherwise skip (legend below handles it)
+        if(sw>0.55) s3.addText(seg.label,{x:cx2,y:by,w:sw,h:barH,fontSize:10,bold:true,color:WHITE,align:'center',valign:'middle',fontFace:'Arial'});
+        cx2+=sw;
+      });
+      // natural hedge indicator — USD only
+      const hedgeRatio=Math.min(b.usd,b.usd===revU?costU:revU);
+      s3.addText(`USD自然避險*：${hedgeRatio}%`,{x:8.1,y:by,w:1.7,h:barH,fontSize:10,color:hedgeRatio>40?TEAL:GOLD,bold:true,fontFace:'Arial',align:'right'});
+      // per-bar legend row (always visible regardless of segment width)
+      const legendItems2=[
+        {c:BLUE,l:'USD',v:b.usd},{c:EUR_COLOR,l:'EUR',v:b.eur},{c:JPY_COLOR,l:'JPY',v:b.jpy},
+        {c:TEAL,l:'VND',v:b.vnd},{c:GRAY3,l:'其他',v:b.other}
+      ];
+      let lx2=barX;
+      legendItems2.forEach(it=>{
+        if(it.v<=0) return;
+        s3.addShape(prs.ShapeType.rect,{x:lx2,y:by+barH+0.03,w:0.15,h:0.15,fill:{color:it.c},rectRadius:0.02});
+        s3.addText(`${it.l} ${it.v}%`,{x:lx2+0.17,y:by+barH+0.03,w:0.7,h:0.25,fontSize:9,color:BLACK,fontFace:'Arial'});
+        lx2+=0.92;
+      });
+    });
+    // footnote for natural hedge
+    s3.addText('* USD自然避險 = min(收入USD%, 成本USD%)，代表USD收支可相互抵銷的比例；EUR、JPY各自比照同邏輯計算。',
+      {x:0.25,y:6.75,w:9.5,h:0.28,fontSize:9,color:GRAY3,fontFace:'Arial',italic:true});
+
+    // mismatch analysis
+    s3.addShape(prs.ShapeType.rect,{x:0.25,y:3.35,w:9.5,h:0.06,fill:{color:gap>30?RED:GOLD}});
+    s3.addShape(prs.ShapeType.rect,{x:0.25,y:3.41,w:9.5,h:1.3,fill:{color:gap>30?RED_L:GOLD_L},line:{color:gap>30?RED:GOLD,width:0.5}});
+    s3.addText('幣別錯配分析',{x:0.4,y:3.45,w:3,h:0.3,fontSize:11,bold:true,color:gap>30?RED:GOLD,fontFace:'Arial'});
+    s3.addText(
+      `收入 USD 佔比 ${revU}%，成本 USD 佔比 ${costU}%，幣別錯配程度：${gap}%。
+`+
+      `每月淨 USD 多頭部位約 $${((sell-buy)/1000).toFixed(0)}K，暴露在 VND 升值風險中。
+`+
+      `若 VND 升值 1%，月度損益影響約 $${((sell)/1000*0.01).toFixed(1)}K USD。`,
+      {x:0.4,y:3.75,w:9.1,h:0.85,fontSize:12,color:BLACK,fontFace:'Arial',valign:'top'}
+    );
+
+    // exchange detail
+    const exRows=[
+      ['月均出口收款（賣 USD→VND）','$'+(sell/1000).toFixed(0)+'K / 月','面臨 VND 升值風險'],
+      ['月均進口付款（買 USD←VND）','$'+(buy/1000).toFixed(0)+'K / 月','面臨 VND 貶值風險'],
+      ['換匯高峰月份',d.peakMonths||'—','建議提前卡位'],
+      ['往來銀行',d.mainBank||'—','我行佔比：'+( d.ourShare||'—')],
+    ];
+    s3.addShape(prs.ShapeType.rect,{x:0.25,y:4.8,w:9.5,h:0.35,fill:{color:NAVY}});
+    s3.addText('換匯明細',{x:0.35,y:4.85,w:9,h:0.25,fontSize:10,bold:true,color:WHITE,fontFace:'Arial'});
+    exRows.forEach((r,i)=>{
+      const ry=5.15+i*0.42;
+      if(i%2===0) s3.addShape(prs.ShapeType.rect,{x:0.25,y:ry,w:9.5,h:0.36,fill:{color:GRAY0}});
+      s3.addText(r[0],{x:0.35,y:ry+0.05,w:3.5,h:0.25,fontSize:10,bold:true,color:GRAY3,fontFace:'Arial'});
+      s3.addText(r[1],{x:3.9,y:ry+0.05,w:2.5,h:0.25,fontSize:11,bold:true,color:NAVY,fontFace:'Arial'});
+      s3.addText(r[2],{x:6.5,y:ry+0.05,w:3.1,h:0.25,fontSize:10,color:GRAY3,fontFace:'Arial'});
+    });
+
+    // ════════════════════════════════════════
+    // SLIDE 4 — 月度外匯曝險預測
+    // ════════════════════════════════════════
+    const s4 = prs.addSlide();
+    s4.addShape(prs.ShapeType.rect,{x:0,y:0,w:'100%',h:0.7,fill:{color:'00695C'}});
+    s4.addShape(prs.ShapeType.rect,{x:0,y:0,w:0.08,h:'100%',fill:{color:TEAL}});
+    s4.addText('04  月度外匯曝險預測（真實避險需求）',{x:0.2,y:0.15,w:9.5,h:0.4,fontSize:16,bold:true,color:WHITE,fontFace:'Arial'});
+
+    if(d.cashflow && d.cashflow.length){
+      // table header
+      const cfCols=[{w:1.2,l:'月份'},{w:1.6,l:'出口收款USD'},{w:1.6,l:'進口付款USD'},{w:1.4,l:'VND缺口Bn'},{w:1.7,l:'需賣USD換VND'},{w:1.7,l:'總外匯曝險'},{w:0.6,l:'風險'}];
+      s4.addShape(prs.ShapeType.rect,{x:0.25,y:0.8,w:9.75,h:0.38,fill:{color:NAVY}});
+      let hx=0.25;
+      cfCols.forEach(c=>{
+        s4.addText(c.l,{x:hx,y:0.82,w:c.w,h:0.34,fontSize:9.5,bold:true,color:WHITE,align:'center',valign:'middle',fontFace:'Arial'});
+        hx+=c.w;
+      });
+      d.cashflow.forEach((r,i)=>{
+        const ry=1.18+i*0.52;
+        if(i%2===0) s4.addShape(prs.ShapeType.rect,{x:0.25,y:ry,w:9.75,h:0.5,fill:{color:GRAY0}});
+        const riskC=r.totalExposure>600000?RED:r.totalExposure>300000?GOLD:TEAL;
+        const vals=[
+          {v:r.month,       bold:true, color:NAVY},
+          {v:'$'+(r.inflow/1000).toFixed(0)+'K',   bold:false,color:BLACK},
+          {v:'$'+(r.outflow/1000).toFixed(0)+'K',  bold:false,color:BLACK},
+          {v:r.vndGap>0?'+'+r.vndGap.toFixed(1)+'Bn':'VND充足', bold:false, color:r.vndGap>0?GOLD:TEAL},
+          {v:r.sellUSDforVND>0?'$'+(r.sellUSDforVND/1000).toFixed(0)+'K':'—', bold:true, color:TEAL},
+          {v:'$'+(r.totalExposure/1000).toFixed(0)+'K', bold:true, color:riskC},
+          {v:r.totalExposure>600000?'高':r.totalExposure>300000?'中':'低', bold:true, color:riskC},
+        ];
+        let vx=0.25;
+        cfCols.forEach((c,ci)=>{
+          s4.addText(vals[ci].v,{x:vx,y:ry+0.08,w:c.w,h:0.34,fontSize:11,bold:vals[ci].bold,color:vals[ci].color,align:'center',valign:'middle',fontFace:'Arial'});
+          vx+=c.w;
+        });
+      });
+      // total row
+      const totExp=d.cashflow.reduce((s,r)=>s+r.totalExposure,0);
+      const totSell=d.cashflow.reduce((s,r)=>s+r.sellUSDforVND,0);
+      const totIn=d.cashflow.reduce((s,r)=>s+r.inflow,0);
+      const totOut=d.cashflow.reduce((s,r)=>s+r.outflow,0);
+      const toty=1.18+d.cashflow.length*0.52;
+      s4.addShape(prs.ShapeType.rect,{x:0.25,y:toty,w:9.75,h:0.45,fill:{color:'C8DEFF'}});
+      s4.addText('6個月合計',{x:0.25,y:toty+0.07,w:1.2,h:0.3,fontSize:11,bold:true,color:NAVY,align:'center',fontFace:'Arial'});
+      s4.addText('$'+(totIn/1000).toFixed(0)+'K',{x:1.45,y:toty+0.07,w:1.6,h:0.3,fontSize:11,bold:true,color:NAVY,align:'center',fontFace:'Arial'});
+      s4.addText('$'+(totOut/1000).toFixed(0)+'K',{x:3.05,y:toty+0.07,w:1.6,h:0.3,fontSize:11,bold:true,color:NAVY,align:'center',fontFace:'Arial'});
+      s4.addText('$'+(totSell/1000).toFixed(0)+'K',{x:6.05,y:toty+0.07,w:1.7,h:0.3,fontSize:11,bold:true,color:TEAL,align:'center',fontFace:'Arial'});
+      s4.addText('$'+(totExp/1000).toFixed(0)+'K',{x:7.75,y:toty+0.07,w:1.7,h:0.3,fontSize:11,bold:true,color:RED,align:'center',fontFace:'Arial'});
+      // ── DSO / DPO timing exposure (uses shared vars from top) ──
+      const netTiming=arInTransit-apInTransit;
+      const dsoBoxY=toty+0.6;
+      s4.addShape(prs.ShapeType.rect,{x:0.25,y:dsoBoxY,w:9.75,h:0.32,fill:{color:'00695C'}});
+      s4.addText('帳期時間敞口分析（DSO / DPO）',{x:0.35,y:dsoBoxY+0.06,w:9,h:0.25,fontSize:10,bold:true,color:WHITE,fontFace:'Arial'});
+      const dsoCards=[
+        {l:`應收在途 USD\n(DSO ${d.dso||'—'})`,v:arInTransit>0?'$'+(arInTransit/1000).toFixed(0)+'K':'—',s:'VND升值→收款損失',c:'E0F5F4',ac:TEAL},
+        {l:`應付在途 USD\n(DPO ${d.dpo||'—'})`,v:apInTransit>0?'$'+(apInTransit/1000).toFixed(0)+'K':'—',s:'VND貶值→付款成本升',c:GOLD_L,ac:GOLD},
+        {l:'淨時間敞口',v:netTiming>0?'+$'+(netTiming/1000).toFixed(0)+'K':netTiming<0?'-$'+(Math.abs(netTiming)/1000).toFixed(0)+'K':'持平',
+          s:netTiming>0?'淨多頭→建議短天期Forward覆蓋':netTiming<0?'淨空頭→監控VND貶值風險':'應收應付互抵',
+          c:netTiming>5000?RED_L:GRAY1,ac:netTiming>5000?RED:GRAY3},
+      ];
+      dsoCards.forEach((card,ci)=>{
+        const cx=0.25+ci*3.25;
+        s4.addShape(prs.ShapeType.rect,{x:cx,y:dsoBoxY+0.34,w:3.1,h:1.0,fill:{color:card.c},line:{color:card.ac,width:0.5},rectRadius:0.05});
+        s4.addText(card.l,{x:cx+0.1,y:dsoBoxY+0.38,w:2.9,h:0.35,fontSize:10,bold:true,color:NAVY,fontFace:'Arial',valign:'top'});
+        s4.addText(card.v,{x:cx+0.1,y:dsoBoxY+0.72,w:2.9,h:0.25,fontSize:13,bold:true,color:card.ac,fontFace:'Arial'});
+        s4.addText(card.s,{x:cx+0.1,y:dsoBoxY+1.0,w:2.9,h:0.28,fontSize:9,color:GRAY3,fontFace:'Arial'});
+      });
+
+      // footnote for exchange rate
+      const avgRate = d.cashflow.length
+        ? Math.round(d.cashflow.reduce((s,r)=>s+r.rate,0)/d.cashflow.length).toLocaleString()
+        : '25,400';
+      const rateNote = d.cashflow.length
+        ? `* VND缺口換算USD採各月填寫之預算匯率（平均 USD/VND ≈ ${avgRate}）；各月匯率詳見問卷現金流欄位。`
+        : `* VND缺口換算USD採預設匯率 USD/VND = 25,400。`;
+      s4.addText(rateNote,{x:0.25,y:6.75,w:9.5,h:0.28,fontSize:9,color:GRAY3,fontFace:'Arial',italic:true});
+    } else {
+      s4.addText('（尚未填寫現金流預測資料）',{x:1,y:2.5,w:8,h:1,fontSize:16,color:GRAY3,align:'center',fontFace:'Arial'});
+    }
+
+    // ════════════════════════════════════════
+    // SLIDE 5 — 風險評估
+    // ════════════════════════════════════════
+    const s5 = prs.addSlide();
+    s5.addShape(prs.ShapeType.rect,{x:0,y:0,w:'100%',h:0.7,fill:{color:'8B6914'}});
+    s5.addShape(prs.ShapeType.rect,{x:0,y:0,w:0.08,h:'100%',fill:{color:GOLD}});
+    s5.addText('05  外匯風險評估與壓力測試',{x:0.2,y:0.15,w:9.5,h:0.4,fontSize:16,bold:true,color:WHITE,fontFace:'Arial'});
+
+    // risk bars (compact — 0.55 per row)
+    const risks=[
+      {l:'USD/VND 匯率波動風險',score:gap>40?5:gap>20?4:3},
+      {l:'幣別錯配暴露（EUR/JPY包含）',score:gap>40?5:gap>20?4:2},
+      {l:'出口旺季集中風險',score:d.peakMonths&&d.peakMonths.length>20?4:3},
+      {l:'現有避險覆蓋率不足',score:d.fwdCov==='沒有做'?5:d.fwdCov==='10%以下'?4:3},
+      {l:'股息匯回集中風險',score:d.divAmt&&parseInt(d.divAmt)>500000?4:2},
+    ];
+    risks.forEach((r,i)=>{
+      const ry=0.85+i*0.9;
+      s5.addText(r.l,{x:0.3,y:ry,w:3.5,h:0.3,fontSize:11,color:BLACK,fontFace:'Arial',bold:true});
+      const barX=3.9, barW=5.5, segW=barW/5;
+      for(let j=0;j<5;j++){
+        const segC=j<r.score?(j<2?TEAL:j<4?GOLD:RED):GRAY2;
+        s5.addShape(prs.ShapeType.rect,{x:barX+j*(segW+0.04),y:ry+0.02,w:segW,h:0.4,fill:{color:segC},rectRadius:0.04});
+      }
+      const rLabel=['低','低','中','中高','高'][r.score-1]||'—';
+      const rLabelC=r.score>=5?RED:r.score>=3?GOLD:TEAL;
+      s5.addText(rLabel,{x:9.55,y:ry,w:0.5,h:0.25,fontSize:11,bold:true,color:rLabelC,fontFace:'Arial'});
+    });
+
+    // ── Balance Sheet FX Exposure (loans) ──
+
+    // ════════════════════════════════════════
+    // SLIDE 5b — 資產負債暴露 & 匯率敏感度
+    // ════════════════════════════════════════
+    const s5b = prs.addSlide();
+    s5b.addShape(prs.ShapeType.rect,{x:0,y:0,w:'100%',h:0.7,fill:{color:'8B6914'}});
+    s5b.addShape(prs.ShapeType.rect,{x:0,y:0,w:0.08,h:'100%',fill:{color:GOLD}});
+    s5b.addText('05b  資產負債外匯暴露 & 匯率敏感度分析',{x:0.2,y:0.15,w:9.5,h:0.4,fontSize:16,bold:true,color:WHITE,fontFace:'Arial'});
+
+    const loanSectionY=0.82;
+    s5b.addShape(prs.ShapeType.rect,{x:0.25,y:loanSectionY,w:9.5,h:0.32,fill:{color:RED}});
+    s5b.addText('資產負債外匯暴露（外幣借款）',{x:0.35,y:loanSectionY+0.06,w:9,h:0.25,fontSize:10,bold:true,color:WHITE,fontFace:'Arial'});
+    if(validLoansAll.length>0){
+      const loanHdr=['銀行 / 機構','幣別','金額','到期日','利率類型','用途'];
+      const lhw=[2.2,0.8,1.4,1.2,1.4,2.3];
+      s5b.addShape(prs.ShapeType.rect,{x:0.25,y:loanSectionY+0.32,w:9.5,h:0.3,fill:{color:NAVY}});
+      let lhx=0.25;
+      loanHdr.forEach((h,i)=>{s5b.addText(h,{x:lhx,y:loanSectionY+0.34,w:lhw[i],h:0.26,fontSize:9,bold:true,color:WHITE,align:'center',fontFace:'Arial'});lhx+=lhw[i];});
+      validLoansAll.forEach((l,i)=>{
+        const lry=loanSectionY+0.62+i*0.33;
+        if(i%2===0) s5b.addShape(prs.ShapeType.rect,{x:0.25,y:lry,w:9.5,h:0.31,fill:{color:RED_L}});
+        const lv=[l.bank||'—',l.ccy||'USD','$'+(parseInt(l.amt)||0).toLocaleString(),l.maturity||'—',l.type||'—',l.purpose||'—'];
+        let lvx=0.25;
+        lv.forEach((v,j)=>{s5b.addText(v,{x:lvx,y:lry+0.04,w:lhw[j],h:0.25,fontSize:9.5,color:j===2?RED:BLACK,bold:j===2,align:'center',fontFace:'Arial'});lvx+=lhw[j];});
+      });
+      // loan FX exposure analysis (uses shared vars)
+      const nonUsdLoans=totalLoanAmt-usdLoansAmt;
+      const lToty=loanSectionY+0.62+validLoansAll.length*0.33;
+      s5b.addShape(prs.ShapeType.rect,{x:0.25,y:lToty,w:9.5,h:0.28,fill:{color:RED_L},line:{color:RED,width:0.5}});
+      const vndDepreciate3=totalLoanAmt*0.03;
+      s5b.addText(
+        `借款總額 $${totalLoanAmt.toLocaleString()} ｜ USD借款 $${usdLoansAmt.toLocaleString()}（USD收入自然對沖）｜ 非USD借款 $${nonUsdLoans.toLocaleString()}（跨幣種風險）｜ VND貶值3%時負債VND等值增加約 $${(vndDepreciate3/1000).toFixed(0)}K`,
+        {x:0.35,y:lToty+0.04,w:9.1,h:0.2,fontSize:9,color:RED,bold:true,fontFace:'Arial'});
+    } else {
+      s5b.addShape(prs.ShapeType.rect,{x:0.25,y:loanSectionY+0.32,w:9.5,h:0.35,fill:{color:GRAY1}});
+      s5b.addText('本次問卷未填寫外幣借款資料。如有外幣借款，請補充以完整評估資產負債外匯敞口。',
+        {x:0.35,y:loanSectionY+0.36,w:9.1,h:0.27,fontSize:10,color:GRAY3,fontFace:'Arial',italic:true});
+    }
+
+    // sensitivity table — dynamic Y based on loan section
+    const loanRowCount=(d.loans&&d.loans.filter(l=>l.amt).length)||0;
+    const loanSectionH=loanRowCount>0 ? 0.32+0.3+loanRowCount*0.33+0.28 : 0.32+0.35;
+    const sensY=loanSectionY+loanSectionH+0.25;
+
+    // helper: format signed USD value
+    const fmtK=(v,pos)=>v===0?'—':(pos?'+':'-')+'$'+(Math.abs(v)/1000).toFixed(0)+'K';
+
+    // sensitivity scenarios: [label, newRate, direction (+1=VND升,-1=VND貶)]
+    const scenarios=[
+      {l:'VND 升值 2%', rate:'24,892', dir:1,  pct:0.02},
+      {l:'VND 升值 5%', rate:'24,130', dir:1,  pct:0.05},
+      {l:'VND 貶值 3%', rate:'26,162', dir:-1, pct:0.03},
+    ];
+
+    // column headers
+    const sCols=[
+      {w:1.45,l:'情境'},
+      {w:1.35,l:'匯率'},
+      {w:1.55,l:'流量損益\n(買賣匯差)'},
+      {w:1.55,l:'帳期損益\n(DSO/DPO)'},
+      {w:1.55,l:'負債BS影響\n(USD借款)'},
+      {w:1.55,l:'合計損益'},
+      {w:0.75,l:'說明'},
+    ];
+    s5b.addShape(prs.ShapeType.rect,{x:0.25,y:sensY,w:9.5,h:0.32,fill:{color:NAVY}});
+    s5b.addText('匯率敏感度分析（含帳期 DSO/DPO + 負債）',{x:0.35,y:sensY+0.06,w:9,h:0.25,fontSize:10,bold:true,color:WHITE,fontFace:'Arial'});
+    // sub-header
+    s5b.addShape(prs.ShapeType.rect,{x:0.25,y:sensY+0.32,w:9.5,h:0.3,fill:{color:'1A3A6A'}});
+    let shx=0.25;
+    sCols.forEach(c=>{
+      s5b.addText(c.l,{x:shx,y:sensY+0.33,w:c.w,h:0.28,fontSize:8.5,bold:true,color:WHITE,align:'center',valign:'middle',fontFace:'Arial'});
+      shx+=c.w;
+    });
+
+    scenarios.forEach((sc,i)=>{
+      const ry=sensY+0.62+i*0.55;
+      if(i%2===0) s5b.addShape(prs.ShapeType.rect,{x:0.25,y:ry,w:9.5,h:0.52,fill:{color:GRAY0}});
+
+      // 1. 流量損益 = (sell - buy) × pct，VND升=損失，VND貶=獲益
+      const flowPnl=Math.round((sell-buy)*sc.pct)*sc.dir*-1;
+      // 2. 帳期損益 = (arInTransit - apInTransit) × pct，同方向
+      const timingPnl=Math.round((arInTransit-apInTransit)*sc.pct)*sc.dir*-1;
+      // 3. 負債BS影響 = usdLoansAmt × pct
+      //    VND升值→USD借款VND等值減少→正向（還款更便宜）
+      //    VND貶值→USD借款VND等值增加→負向（還款更貴）
+      const loanPnl=Math.round(usdLoansAmt*sc.pct)*sc.dir;
+      const total=flowPnl+timingPnl+loanPnl;
+
+      const note=sc.dir===1
+        ? (total<0?'建議優先做Forward':'負債對沖部分效果')
+        : '進口成本↑，借款成本↑';
+
+      const vals=[
+        {v:sc.l,       c:sc.dir===1?RED:TEAL, bold:true},
+        {v:'25,400→'+sc.rate, c:BLACK, bold:false},
+        {v:fmtK(flowPnl,  flowPnl>0),   c:flowPnl<0?RED:TEAL,   bold:false},
+        {v:fmtK(timingPnl,timingPnl>0), c:timingPnl<0?RED:TEAL, bold:false},
+        {v:usdLoansAmt>0?fmtK(loanPnl,loanPnl>0):'無借款', c:loanPnl>0?TEAL:loanPnl<0?RED:GRAY3, bold:false},
+        {v:fmtK(total,    total>0),      c:total<0?RED:TEAL,     bold:true},
+        {v:note,           c:GRAY3,        bold:false},
+      ];
+      let vx=0.25;
+      sCols.forEach((c,ci)=>{
+        s5b.addText(vals[ci].v,{x:vx,y:ry+0.06,w:c.w,h:0.26,fontSize:9,bold:vals[ci].bold,color:vals[ci].c,align:'center',valign:'middle',fontFace:'Arial'});
+        vx+=c.w;
+      });
+    });
+    // footnote
+    s5b.addText('* 流量 = 月均賣出/買入USD淨差；帳期 = DSO在途應收 - DPO在途應付；負債BS = USD借款VND等值變動（資產負債表影響，非當期P&L）',
+      {x:0.25,y:sensY+0.62+3*0.55+0.12,w:9.5,h:0.25,fontSize:8.5,color:GRAY3,fontFace:'Arial',italic:true});
+
+    // ════════════════════════════════════════
+    // SLIDE 6 — 避險建議方案
+    // ════════════════════════════════════════
+    const s6 = prs.addSlide();
+    s6.addShape(prs.ShapeType.rect,{x:0,y:0,w:'100%',h:0.7,fill:{color:NAVY}});
+    s6.addShape(prs.ShapeType.rect,{x:0,y:0,w:0.08,h:'100%',fill:{color:TEAL}});
+    s6.addText('06  外匯避險建議方案',{x:0.2,y:0.15,w:9.5,h:0.4,fontSize:16,bold:true,color:WHITE,fontFace:'Arial'});
+
+    // ── Slide 6 shared calculations ──
+    const revMidMap={'USD 100萬以下':500000,'USD 100–500萬':3000000,'USD 500萬–1,000萬':7500000,'USD 1,000萬–5,000萬':30000000,'USD 5,000萬以上':60000000};
+    const annRevMid=revMidMap[d.annualRevenue]||10000000;
+    const mthEUR=Math.round(annRevMid*(revEurU/100)/12);
+    const mthJPY=Math.round(annRevMid*(revJpyU/100)/12);
+    const divAmt=parseInt(d.divAmt)||0;
+    const netTimingS=arInTransit-apInTransit;
+    const totalAllExp=(sell-buy)+netTimingS+totalLoanAmt/12+divAmt/12;
+
+    // Cost-side hedge amount: avg monthly VND operating cost from cashflow, converted to USD
+    const cfAvgVndCost=d.cashflow&&d.cashflow.length>0
+      ? d.cashflow.reduce((s,r)=>s+(r.vndCost||0),0)/d.cashflow.length : 0;
+    const cfAvgRate2=d.cashflow&&d.cashflow.length>0
+      ? d.cashflow.reduce((s,r)=>s+(r.rate||25400),0)/d.cashflow.length : 25400;
+    // If no cashflow data, estimate from annual COGS × costVND%
+    const annCogsMid=revMidMap[d.annualCOGS]||5000000;
+    const costSideUSD=cfAvgVndCost>0
+      ? Math.round(cfAvgVndCost*1e9/cfAvgRate2)
+      : Math.round(annCogsMid*(parseInt(d.costVND)||60)/100/12);
+
+    // Exposure dashboard row
+    const expCards=[
+      {l:'USD流量\n（月均淨多頭）',v:sell>0?'$'+(((sell-buy))/1000).toFixed(0)+'K':'—',ac:RED,bg:RED_L},
+      {l:'帳期曝險\n（DSO-DPO在途）',v:'$'+(Math.abs(netTimingS)/1000).toFixed(0)+'K',ac:GOLD,bg:GOLD_L},
+      {l:'EUR/JPY\n（月均暴露估算）',v:(mthEUR||mthJPY)?'$'+(((mthEUR)+(mthJPY))/1000).toFixed(0)+'K':'無',ac:'7B4FBE',bg:'EDE7FF'},
+      {l:'負債+股息\n（月均攤提）',v:(totalLoanAmt||divAmt)?'$'+((totalLoanAmt/12+divAmt/12)/1000).toFixed(0)+'K':'無',ac:GRAY3,bg:GRAY1},
+    ];
+    s6.addShape(prs.ShapeType.rect,{x:0.25,y:0.82,w:9.5,h:0.28,fill:{color:'1A3A6A'}});
+    s6.addText('全口徑外匯曝險總覽',{x:0.35,y:0.85,w:5,h:0.25,fontSize:10,bold:true,color:WHITE,fontFace:'Arial'});
+    s6.addText(`合計月均暴露估算：≈ $${(Math.abs(totalAllExp)/1000).toFixed(0)}K`,{x:5.5,y:0.85,w:4,h:0.22,fontSize:10,bold:true,color:WHITE,align:'right',fontFace:'Arial'});
+    expCards.forEach((ec,i)=>{
+      const ex=0.25+i*2.38;
+      s6.addShape(prs.ShapeType.rect,{x:ex,y:1.1,w:2.25,h:0.75,fill:{color:ec.bg},line:{color:ec.ac,width:0.5},rectRadius:0.04});
+      s6.addText(ec.l,{x:ex+0.08,y:1.12,w:2.1,h:0.32,fontSize:9,color:GRAY3,fontFace:'Arial',valign:'top'});
+      s6.addText(ec.v,{x:ex+0.08,y:1.46,w:2.1,h:0.3,fontSize:11,bold:true,color:ec.ac,fontFace:'Arial'});
+    });
+
+    // ── Section A: 基礎方案（成本面）──
+    const hasDividend=divAmt>0;
+    const hasEUR=revEurU>0||costEurU>0;
+    const hasJPY=revJpyU>0||costJpyU>0;
+    const hasNonUsdLoan=totalLoanAmt>0&&(totalLoanAmt-usdLoansAmt)>0;
+
+    // Section A label
+    s6.addShape(prs.ShapeType.rect,{x:0.25,y:1.92,w:9.5,h:0.26,fill:{color:TEAL}});
+    s6.addText('▶ 基礎方案（成本面避險）— 入門首選，若客戶只做一件事，做這個',
+      {x:0.35,y:1.93,w:9,h:0.25,fontSize:10,bold:true,color:WHITE,fontFace:'Arial'});
+
+    // Cost-side box
+    s6.addShape(prs.ShapeType.rect,{x:0.25,y:2.18,w:9.5,h:1.25,fill:{color:TEAL_L},line:{color:TEAL,width:1},rectRadius:0.05});
+    s6.addShape(prs.ShapeType.rect,{x:0.28,y:2.25,w:1.0,h:0.22,fill:{color:TEAL},rectRadius:0.03});
+    s6.addText('入門首選',{x:0.28,y:2.25,w:1.0,h:0.25,fontSize:9,bold:true,color:WHITE,align:'center',valign:'middle',fontFace:'Arial'});
+    s6.addShape(prs.ShapeType.rect,{x:8.45,y:2.25,w:1.2,h:0.22,fill:{color:TEAL},rectRadius:0.03});
+    s6.addText('一次做12個月',{x:8.45,y:2.25,w:1.2,h:0.25,fontSize:9,bold:true,color:WHITE,align:'center',valign:'middle',fontFace:'Arial'});
+    s6.addText('每月固定 VND 成本 → Sell USD / Buy VND Forward（12個月期，一次完成）',
+      {x:1.35,y:2.24,w:7.0,h:0.25,fontSize:12,bold:true,color:NAVY,fontFace:'Arial'});
+    s6.addText(
+      `每月固定需要支付的VND成本（薪資、租金、水電等）金額確定、日期確定，是最適合做遠匯的部分。`+
+      `一次做12個月的Forward，一勞永逸，無需每月操作。`+
+      `對想保留USD帳戶的客戶尤其合適：只換「必須換的部分」，其餘USD繼續持有。`,
+      {x:0.33,y:2.5,w:9.1,h:0.38,fontSize:9.5,color:BLACK,fontFace:'Arial',valign:'top'});
+    s6.addText(`工具：Sell USD/Buy VND Forward，天期12個月，按月交割`,
+      {x:0.33,y:2.88,w:6.0,h:0.25,fontSize:9,color:GRAY3,fontFace:'Arial'});
+    s6.addText(
+      `月均金額：≈ USD $${(costSideUSD/1000).toFixed(0)}K／月${cfAvgVndCost>0?`（現金流表VND費用 ${cfAvgVndCost.toFixed(1)}Bn÷匯率）`:`（年度成本×VND${d.costVND}%÷12估算）`}　｜　一次性執行，12個月免維護`,
+      {x:0.33,y:3.16,w:9.1,h:0.18,fontSize:9.5,bold:true,color:TEAL,fontFace:'Arial'});
+
+    // Section B label
+
+
+    // ── S6 benefits section (fills whitespace below cost box) ──
+    s6.addShape(prs.ShapeType.rect,{x:0.25,y:3.55,w:9.5,h:0.30,fill:{color:'1A3A6A'}});
+    s6.addText('為什麼成本面避險是最佳入門選擇？',{x:0.35,y:3.58,w:9,h:0.24,fontSize:11,bold:true,color:WHITE,fontFace:'Arial'});
+
+    const benefits=[
+      {icon:'✓',title:'金額確定，零超額避險風險',
+       body:'每月薪資、租金金額固定，Forward金額精確對應，不會出現over-hedging的問題。'},
+      {icon:'✓',title:'一次執行，12個月免維護',
+       body:'一筆交易覆蓋整年VND需求，無需每月到銀行操作，財務人員的時間成本極低。'},
+      {icon:'✓',title:'USD帳戶保留，繼續受益VND貶值',
+       body:'只換「必須換的VND」，其餘USD留存帳上，不放棄VND長期貶值帶來的匯兌收益。'},
+    ];
+    benefits.forEach((b,i)=>{
+      const bx=0.25+i*3.17;
+      const bcol=i===0?TEAL:i===1?BLUE:'003388';
+      s6.addShape(prs.ShapeType.rect,{x:bx,y:3.9,w:3.05,h:2.6,fill:{color:'F0F9F8'},line:{color:bcol,width:1},rectRadius:0.08});
+      s6.addShape(prs.ShapeType.rect,{x:bx,y:3.9,w:3.05,h:0.08,fill:{color:bcol},rectRadius:0.08});
+      s6.addText(b.icon,{x:bx+0.12,y:3.98,w:0.4,h:0.4,fontSize:18,bold:true,color:bcol,fontFace:'Arial'});
+      s6.addText(b.title,{x:bx+0.12,y:4.0,w:2.8,h:0.4,fontSize:10,bold:true,color:NAVY,fontFace:'Arial',valign:'middle'});
+      s6.addText(b.body,{x:bx+0.12,y:4.42,w:2.8,h:1.0,fontSize:9.5,color:BLACK,fontFace:'Arial',valign:'top'});
+    });
+
+    // ── Example calculation row ──
+    s6.addShape(prs.ShapeType.rect,{x:0.25,y:6.58,w:9.5,h:0.4,fill:{color:TEAL_L},line:{color:TEAL,width:0.5},rectRadius:0.06});
+    s6.addText('📌 執行範例：每月VND費用 8.5Bn ÷ 匯率26,300 ≈ USD $323K → 做12筆遠匯，每月交割USD $323K，一次簽約即完成全年避險',
+      {x:0.35,y:6.6,w:9.1,h:0.34,fontSize:9,color:NAVY,fontFace:'Arial',valign:'middle',bold:false});
+
+
+    // ════════════════════════════════════════
+    // SLIDE 6b — 進階方案：收入面分層避險
+    // ════════════════════════════════════════
+    const s6b = prs.addSlide();
+    s6b.addShape(prs.ShapeType.rect,{x:0,y:0,w:'100%',h:0.7,fill:{color:NAVY}});
+    s6b.addShape(prs.ShapeType.rect,{x:0,y:0,w:0.08,h:'100%',fill:{color:TEAL}});
+    s6b.addText('06b  進階方案 — 收入面分層避險',{x:0.2,y:0.15,w:9.5,h:0.4,fontSize:16,bold:true,color:WHITE,fontFace:'Arial'});
+
+    // (section label moved to slide header)
+    
+
+    const layers=[
+      {
+        show:sell>0,
+        badge:'Layer 1',badgeC:RED,
+        label:'優先執行',labelBg:RED,
+        title:'USD 流量避險 — Forward 滾動策略',
+        body:`覆蓋月均出口收款60%（方案A）或旺季集中40%（方案B），採滾動Forward鎖定預算匯率，防止VND升值侵蝕利潤。旺季月份（${d.peakMonths||'請確認'}）前1個月提前執行。`,
+        product:`Sell USD/Buy VND Forward（1M–3M Rolling）`,
+        amount:`USD ${sell>0?(sell*6*0.6/1e6).toFixed(1)+'M（6個月60%覆蓋）':'-'}`,
+        timing:`本月內啟動 / 每月滾動`,
+      },
+      {
+        show:arInTransit>50000,
+        badge:'Layer 1B',badgeC:GOLD,
+        label:'Layer 1 替代方案',labelBg:GOLD,
+        title:`DSO 帳期精準避險（替代 Layer 1，擇一執行）`,
+        body:`Layer 1 以「月」為單位預測；此方案以「每張發票」為單位，開票後立即鎖定。兩者避險的是同一批USD AR，勿同時執行（否則超額避險）。適合DSO較長（${d.dso}）或收款時點不固定的客戶，精確度更高但需每次操作。`,
+        product:`Sell USD/Buy VND Forward（天期精確對應各筆AR收款日）`,
+        amount:`月均約 USD $${(Math.round(arInTransit*0.65)/1000).toFixed(0)}K（計畫換匯比例 ≈65%）`,
+        timing:`每批出口報關後立即執行，取代每月滾動`,
+      },
+      {
+        show:hasEUR||hasJPY,
+        badge:'Layer 3',badgeC:'7B4FBE',
+        label:hasEUR||hasJPY?'需評估':'不適用',labelBg:hasEUR||hasJPY?'7B4FBE':GRAY3,
+        title:`EUR 與 JPY 各幣種曝險避險（兩個獨立貨幣對）`,
+        body:`${hasEUR?`【EUR】收入佔比${revEurU}%，月均約USD等值 $${(mthEUR/1000).toFixed(0)}K，建議工具：Sell EUR/Buy VND Forward（EUR兌VND為獨立幣對）。`:''}${hasJPY?` 【JPY】收入佔比${revJpyU}%，月均約USD等值 $${(mthJPY/1000).toFixed(0)}K，日圓近年波動劇烈，建議工具：Sell JPY/Buy VND或Sell JPY/Buy USD Forward（JPY兌VND流動性較差）。`:''}兩者為獨立貨幣對，需分開執行，勿混淆為EUR/JPY交叉盤。`,
+        product:`EUR：Sell EUR/Buy VND Forward${hasJPY?' ｜ JPY：Sell JPY/Buy USD Forward':''}`,
+        amount:`EUR ≈ $${(mthEUR/1000).toFixed(0)}K/月${hasJPY?`　JPY ≈ $${(mthJPY/1000).toFixed(0)}K/月（USD等值）`:''}`,
+        timing:`隨出口訂單確認後分幣種各別執行`,
+      },
+      {
+        show:totalLoanAmt>0,
+        badge:'Layer 4',badgeC:hasNonUsdLoan?RED:TEAL,
+        label:hasNonUsdLoan?'需關注':'暫可控',labelBg:hasNonUsdLoan?RED:TEAL,
+        title:`外幣借款負債對沖`,
+        body:hasNonUsdLoan
+          ?`非USD借款 $${((totalLoanAmt-usdLoansAmt)/1000).toFixed(0)}K 面臨跨幣種匯率風險，建議評估CCS（跨幣種利率互換）。USD借款 $${(usdLoansAmt/1000).toFixed(0)}K 可由USD出口收入自然對沖，整體BS敞口相對可控。`
+          :`USD借款 $${(usdLoansAmt/1000).toFixed(0)}K 均可由USD收入自然對沖，負債外匯風險暫可控。VND貶值3%時BS影響約 $${(usdLoansAmt*0.03/1000).toFixed(0)}K，建議定期監控。`,
+        product:hasNonUsdLoan?'CCS（跨幣種利率互換）/ 定期審視':'持續監控，暫無需額外工具',
+        amount:`總借款 $${(totalLoanAmt/1000).toFixed(0)}K`,
+        timing:hasNonUsdLoan?'建議本季評估':'每季回顧一次',
+      },
+      {
+        show:hasDividend||d.divPlan==='有，金額未定',
+        badge:'Layer 5',badgeC:hasDividend?RED:GOLD,
+        label:hasDividend?'優先處理':'視需求',labelBg:hasDividend?RED:GOLD,
+        title:`股息匯回外匯規劃（${d.divTiming||'時間待定'}）`,
+        body:`股息匯回 ${hasDividend?'USD '+divAmt.toLocaleString():'金額未定'}，屬一次性大額換匯，集中風險高。建議提前2個月以Forward分批鎖定匯率，並同步備妥審計報告、完稅證明、ODA帳戶申報文件，本行協助全程文件跟進。`,
+        product:`Spot + 分批 Forward 鎖定 + 央行申報協助`,
+        amount:hasDividend?`USD ${divAmt.toLocaleString()}`:'待確認',
+        timing:d.divTiming?`${d.divTiming}，提前2個月啟動`:'請確認時間點',
+      },
+    ].filter(l=>l.show);
+
+    const boxH=1.18;
+    const startY=0.82;
+    layers.forEach((rec,i)=>{
+      const ry=startY+i*(boxH+0.03);
+      const bg=rec.badge==='Layer 1'?RED_L:rec.badge==='Layer 2'?GOLD_L:rec.badge==='Layer 3'?'EDE7FF':rec.badge==='Layer 4'?(hasNonUsdLoan?RED_L:TEAL_L):RED_L;
+      s6b.addShape(prs.ShapeType.rect,{x:0.25,y:ry,w:9.5,h:boxH,fill:{color:bg},line:{color:rec.badgeC,width:0.6},rectRadius:0.05});
+      // ── Row 1: badge | title | urgency ──
+      s6b.addShape(prs.ShapeType.rect,{x:0.28,y:ry+0.04,w:0.72,h:0.20,fill:{color:rec.badgeC},rectRadius:0.03});
+      s6b.addText(rec.badge,{x:0.28,y:ry+0.04,w:0.72,h:0.25,fontSize:8.5,bold:true,color:WHITE,align:'center',valign:'middle',fontFace:'Arial'});
+      s6b.addShape(prs.ShapeType.rect,{x:8.48,y:ry+0.04,w:1.18,h:0.20,fill:{color:rec.labelBg},rectRadius:0.03});
+      s6b.addText(rec.label,{x:8.48,y:ry+0.04,w:1.18,h:0.25,fontSize:8.5,bold:true,color:WHITE,align:'center',valign:'middle',fontFace:'Arial'});
+      s6b.addText(rec.title,{x:1.06,y:ry+0.04,w:7.3,h:0.25,fontSize:11,bold:true,color:NAVY,fontFace:'Arial',valign:'middle'});
+      // ── Row 2: body text (left 56%) | 工具 (right 42%) — no overlap ──
+      const shortBody=rec.body.length>130?rec.body.substring(0,128)+'…':rec.body;
+      s6b.addText(shortBody,{x:0.30,y:ry+0.31,w:5.3,h:0.50,fontSize:9,color:BLACK,fontFace:'Arial',valign:'top',shrinkText:true});
+      s6b.addText('工具：'+rec.product,{x:5.70,y:ry+0.31,w:4.0,h:0.50,fontSize:8.5,color:GRAY3,fontFace:'Arial',valign:'top',italic:true,shrinkText:true});
+      // ── Row 3: amount | timing (bottom, full width, colored) ──
+      s6b.addText(rec.amount+'   ｜   '+rec.timing,{x:0.30,y:ry+0.54,w:9.2,h:0.25,fontSize:9,bold:true,color:rec.badgeC,fontFace:'Arial'});
+    });
+
+    // ════════════════════════════════════════
+    // SLIDE 7 — 所需資料 & 下一步
+    // ════════════════════════════════════════
+    const s7 = prs.addSlide();
+    s7.addShape(prs.ShapeType.rect,{x:0,y:0,w:'100%',h:0.7,fill:{color:NAVY}});
+    s7.addShape(prs.ShapeType.rect,{x:0,y:0,w:0.08,h:'100%',fill:{color:TEAL}});
+    s7.addText('07  所需資料清單 & 下一步行動',{x:0.2,y:0.15,w:9.5,h:0.4,fontSize:16,bold:true,color:WHITE,fontFace:'Arial'});
+
+    // data checklist
+    s7.addShape(prs.ShapeType.rect,{x:0.25,y:0.85,w:4.6,h:0.35,fill:{color:TEAL}});
+    s7.addText('每月提供資料清單',{x:0.35,y:0.87,w:4.4,h:0.3,fontSize:11,bold:true,color:WHITE,fontFace:'Arial'});
+    const checkItems=[
+      ['每月','未來3個月出口訂單與預計收款日期'],
+      ['每月','未來3個月進口付款計畫（金額/幣別/時間）'],
+      ['每月','實際換匯紀錄（如有在他行）'],
+      ['季度','公司預算匯率'],
+      ['季度','損益表中外幣損益金額'],
+      ['一次性','現有外幣借款明細（如有）'],
+    ];
+    checkItems.forEach((item,i)=>{
+      const ry=1.2+i*0.42;
+      if(i%2===0) s7.addShape(prs.ShapeType.rect,{x:0.25,y:ry,w:4.6,h:0.4,fill:{color:GRAY0}});
+      s7.addShape(prs.ShapeType.rect,{x:0.3,y:ry+0.08,w:0.65,h:0.25,fill:{color:TEAL},rectRadius:0.03});
+      s7.addText(item[0],{x:0.3,y:ry+0.08,w:0.65,h:0.25,fontSize:9,bold:true,color:WHITE,align:'center',valign:'middle',fontFace:'Arial'});
+      s7.addText(item[1],{x:1.05,y:ry+0.08,w:3.7,h:0.25,fontSize:11,color:BLACK,fontFace:'Arial'});
+    });
+
+    // next steps
+    s7.addShape(prs.ShapeType.rect,{x:5.1,y:0.85,w:4.65,h:0.35,fill:{color:BLUE}});
+    s7.addText('下一步行動',{x:5.2,y:0.87,w:4.4,h:0.3,fontSize:11,bold:true,color:WHITE,fontFace:'Arial'});
+    const nextSteps=[
+      {num:'01', title:'確認避險方案', body:`選擇方案A或B，確認Forward起始金額與天期，本周內回覆。`},
+      {num:'02', title:'股息匯回文件準備', body:`如計畫${d.divTiming||'今年'}匯回，請提前2個月備妥審計報告與完稅證明。`},
+      {num:'03', title:'每月Treasury Report', body:`每月提供現金流預測資料，本行每月產出完整報告，追蹤避險效益。`},
+    ];
+    nextSteps.forEach((s,i)=>{
+      const ry=1.2+i*1.65;
+      s7.addShape(prs.ShapeType.rect,{x:5.1,y:ry,w:4.65,h:1.55,fill:{color:'E8F2FF'},line:{color:BLUE,width:0.5},rectRadius:0.06});
+      s7.addShape(prs.ShapeType.rect,{x:5.15,y:ry+0.08,w:0.5,h:0.5,fill:{color:NAVY},rectRadius:0.04});
+      s7.addText(s.num,{x:5.15,y:ry+0.08,w:0.5,h:0.5,fontSize:12,bold:true,color:WHITE,align:'center',valign:'middle',fontFace:'Arial'});
+      s7.addText(s.title,{x:5.75,y:ry+0.1,w:3.9,h:0.35,fontSize:12,bold:true,color:NAVY,fontFace:'Arial'});
+      s7.addText(s.body,{x:5.75,y:ry+0.5,w:3.9,h:0.9,fontSize:11,color:BLACK,fontFace:'Arial',valign:'top'});
+    });
+
+    // footer on all slides
+    [s1,s2,s3,s4,s5,s5b,s6,s6b,s7].forEach((s,i)=>{
+      if(i>0){
+        s.addShape(prs.ShapeType.line,{x:0.2,y:7.1,w:9.8,h:0,line:{color:GRAY2,width:0.5}});
+        s.addText('台北富邦銀行 Treasury Marketing Unit',{x:0.2,y:7.18,w:4,h:0.25,fontSize:9,color:GRAY3,fontFace:'Arial'});
+        s.addText('Confidential',{x:4.3,y:7.18,w:1.6,h:0.25,fontSize:9,color:GRAY3,align:'center',fontFace:'Arial'});
+        s.addText((i+1)+' / 9',{x:9.3,y:7.18,w:0.7,h:0.2,fontSize:9,color:GRAY3,align:'right',fontFace:'Arial'});
+      }
+    });
+
+    // ══ save ══
+    const fname=`Treasury_PPT_${company.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g,'_')}_${new Date().toISOString().slice(0,10)}.pptx`;
+    await prs.writeFile({fileName:fname});
+
+  }catch(e){
+    console.error(e);
+    alert('PPT產出失敗：'+e.message);
+  }
+  b1.disabled=b2.disabled=false; b1.textContent='下載 PPT';
+}
+
+// ── demo data ──
+function loadDemo(){
+  const set=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val};
+  const rng=(id,val,vid)=>{const e=document.getElementById(id);if(e){e.value=val;document.getElementById(vid).textContent=val+'%'}};
+  const selPills=(gid,vals)=>{document.querySelectorAll(`#${gid} .pill`).forEach(p=>{if(vals.includes(p.textContent.trim()))p.classList.add('on')})};
+  const selPill=(gid,val)=>{document.querySelectorAll(`#${gid} .pill`).forEach(p=>{p.classList.toggle('on',p.textContent.trim()===val)})};
+
+  set('companyVN','Sunrise Furniture Vietnam Co., Ltd.');
+  set('companyTW','日昇家具股份有限公司');
+  set('industry','木材家具');
+  set('location','平陽省');
+  set('headcount','500–2,000人');
+  set('foundedYear','2016');
+  set('contactName','王建民 / CFO');
+  set('companyNote','主要出口歐美，收款全USD。進口原物料（馬來西亞木材）用USD付款。人工+管理費用全VND。每年Q2/Q3出口旺季。2024年因VND意外升值損失約USD60K。目前全部在Vietcombank做Spot，未做任何Forward。CFO表示想了解Forward但擔心「lock錯方向」。');
+  set('annualRevenue','USD 1,000萬–5,000萬');
+  set('annualCOGS','USD 500萬–1,000萬');
+  rng('revUSD','70','revUSDv'); rng('revEUR','15','revEURv'); rng('revJPY','5','revJPYv'); rng('revVND','10','revVNDv'); rng('revOther','0','revOtherv');
+  rng('costUSD','30','costUSDv'); rng('costEUR','5','costEURv'); rng('costJPY','5','costJPYv'); rng('costVND','55','costVNDv'); rng('costOther','5','costOtherv');
+  selPills('custType',['歐美外資','其他台商']);
+  set('dso','30–60天'); set('dpo','30天內');
+  set('mthSell','680000'); set('mthBuy','190000');
+  set('mainBank','Vietcombank'); set('ourShare','少量 <20%');
+  selPills('peakM',['6月','7月','8月','9月']);
+  selPill('fxImpact','有，影響明顯'); set('fxLossAmt','62000');
+
+  // cashflow
+  const cfRows=document.querySelectorAll('#cfBody tr');
+  // [出口收款USD, 進口付款USD, VND自然流入Bn(本地銷售), VND費用Bn(薪資租金水電)]
+  // Sunrise Furniture: 90%出口USD, 10%本地VND銷售, 每月薪資+租金+水電約8-9Bn VND
+  const cfData=[
+    [800000, 220000, 1.8, 8.2],
+    [920000, 180000, 1.8, 8.5],
+    [1100000,250000, 2.0, 9.0],
+    [750000, 190000, 1.8, 8.2],
+    [680000, 200000, 1.8, 8.0],
+    [590000, 170000, 1.6, 7.8],
+  ];
+  cfRows.forEach((tr,i)=>{
+    if(cfData[i]){
+      tr.querySelector('.cf-in').value=cfData[i][0];
+      tr.querySelector('.cf-out').value=cfData[i][1];
+      tr.querySelector('.cf-vnd-in').value=cfData[i][2];
+      tr.querySelector('.cf-vnd-cost').value=cfData[i][3];
+      tr.querySelector('.cf-rate').value=26300;
+      calcCF(tr);
+    }
+  });
+
+  // loans — add Fubon row
+  const loanTbody=document.getElementById('loanBody');
+  if(loanTbody){
+    // fill first row
+    const r0=loanTbody.rows[0];
+    r0.querySelectorAll('input')[0].value='Fubon Bank';
+    r0.querySelectorAll('select')[0].value='USD';
+    r0.querySelectorAll('input')[1].value='2000000';
+    r0.querySelectorAll('input')[2].value='2026-12';
+    r0.querySelectorAll('select')[1].value='浮動(SOFR)';
+    r0.querySelectorAll('input')[3].value='運營資金';
+  }
+
+  set('capAmt','10000000');
+  selPill('divPlan','有，金額確定'); set('divAmt','1200000'); set('divTiming','2026 Q3');
+  set('icNote','每月向台灣母公司支付管理費USD25K，無其他集團借款');
+  selPills('hedgeTools',['Spot（即期）']);
+  set('fwdCov','沒有做'); set('fwdTenor','沒有做');
+  selPill('hedgeDec','越南子公司自行');
+  selPills('fwdConcern',['VND長期貶值不想lock','不了解產品機制']);
+  set('hedgeNote','2024年Q2有詢問過Forward但最後沒做，說擔心VND繼續貶就虧了。CFO是台灣人，財務背景強，需要用數字說服。');
+
+  alert('Demo資料已載入！點擊「產出報告」開始分析。');
+}
+
+function clearAll(){
+  if(!confirm('確定清除所有資料？'))return;
+  document.querySelectorAll('input[type=text],input[type=number],textarea').forEach(e=>e.value='');
+  document.querySelectorAll('select').forEach(e=>e.selectedIndex=0);
+  document.querySelectorAll('.pill.on').forEach(e=>e.classList.remove('on'));
+  document.querySelectorAll('input[type=range]').forEach(e=>{e.value=0});
+  ['revUSDv','revVNDv','revOtherv','costUSDv','costVNDv','costOtherv'].forEach(id=>document.getElementById(id).textContent='0%');
+  document.querySelectorAll('#cfBody tr').forEach(tr=>{tr.querySelectorAll('input').forEach(i=>{if(i.classList.contains('cf-rate'))i.value=25000;else i.value='';});tr.querySelector('.cf-net').textContent='—';tr.querySelector('.cf-vnd').textContent='—';});
+  reports={internal:'',client:''};
+  go(0);
+}
+</script>
+</body>
+</html>
